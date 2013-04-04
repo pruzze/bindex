@@ -14,7 +14,7 @@ import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.VersionKey;
 import org.osgi.service.indexer.impl.types.VersionRange;
@@ -35,7 +35,7 @@ public class SCRAnalyzer implements ResourceAnalyzer {
 		this.log = log;
 	}
 
-	public void analyzeResource(Resource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
+	public void analyzeResource(IndexableResource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
 		String header = resource.getManifest().getMainAttributes().getValue(ComponentConstants.SERVICE_COMPONENT);
 		if (header == null)
 			return;
@@ -58,8 +58,8 @@ public class SCRAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private Version processScrXml(Resource resource, String path) throws IOException {
-		Resource childResource = resource.getChild(path);
+	private Version processScrXml(IndexableResource resource, String path) throws IOException {
+		IndexableResource childResource = resource.getChild(path);
 		if (childResource == null) {
 			if (log != null) log.log(LogService.LOG_WARNING, MessageFormat.format("Cannot analyse SCR requirement version: resource {0} does not contain path {1} referred from Service-Component header.", resource.getLocation(), path));
 			return null;

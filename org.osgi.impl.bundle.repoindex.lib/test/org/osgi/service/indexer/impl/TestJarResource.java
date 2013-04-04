@@ -6,7 +6,7 @@ import java.util.jar.Manifest;
 
 import junit.framework.TestCase;
 
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 
 public class TestJarResource extends TestCase {
 
@@ -43,7 +43,7 @@ public class TestJarResource extends TestCase {
 	
 	public void testJarFileContent() throws Exception {
 		JarResource resource = new JarResource(new File("testdata/01-bsn+version.jar"));
-		Resource pkgInfoResource = resource.getChild("org/example/a/packageinfo");
+		IndexableResource pkgInfoResource = resource.getChild("org/example/a/packageinfo");
 		
 		assertEquals("version 1.0", Utils.readStream(pkgInfoResource.getStream()));
 	}

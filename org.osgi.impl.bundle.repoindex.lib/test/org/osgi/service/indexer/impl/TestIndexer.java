@@ -26,8 +26,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.indexer.Capability;
+import org.osgi.service.indexer.IndexWriter;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.log.LogService;
@@ -126,14 +127,17 @@ public class TestIndexer extends TestCase {
 	public void testEmptyIndex() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
+		IndexWriter iw = new DefaultIndexWriter();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = Collections.emptySet();
 
 		Map<String, String> config = new HashMap<String, String>();
-		config.put(RepoIndex.REPOSITORY_INCREMENT_OVERRIDE, "0");
-		config.put(ResourceIndexer.REPOSITORY_NAME, "empty");
-		config.put(ResourceIndexer.PRETTY, "true");
-		indexer.index(files, out, config);
+		config.put(IndexWriter.REPOSITORY_INCREMENT_OVERRIDE, "0");
+		config.put(IndexWriter.REPOSITORY_NAME, "empty");
+		config.put(IndexWriter.PRETTY, "true");
+		iw.open(out, config);
+		indexer.index(files, iw, config);
+		iw.close();
 		
 		String expected = Utils.readStream(new FileInputStream("testdata/empty.txt"));
 		assertEquals(expected, out.toString());
@@ -142,15 +146,18 @@ public class TestIndexer extends TestCase {
 	public void testFullIndex() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
+		IndexWriter iw = new DefaultIndexWriter();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/03-export.jar"));
 		files.add(new File("testdata/06-requirebundle.jar"));
 		
 		Map<String, String> config = new HashMap<String, String>();
-		config.put(RepoIndex.REPOSITORY_INCREMENT_OVERRIDE, "0");
-		config.put(ResourceIndexer.REPOSITORY_NAME, "full-c+f");
-		indexer.index(files, out, config);
+		config.put(IndexWriter.REPOSITORY_INCREMENT_OVERRIDE, "0");
+		config.put(IndexWriter.REPOSITORY_NAME, "full-c+f");
+		iw.open(out, config);
+		indexer.index(files, iw, config);
+		iw.close();
 		
 		String unpackedXML = Utils.readStream(new FileInputStream("testdata/unpacked.xml"));
 		String expected = unpackedXML.replaceAll("[\\n\\t]*", "");
@@ -160,16 +167,19 @@ public class TestIndexer extends TestCase {
 	public void testFullIndexPrettyPrint() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
+		IndexWriter iw = new DefaultIndexWriter();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/03-export.jar"));
 		files.add(new File("testdata/06-requirebundle.jar"));
 		
 		Map<String, String> config = new HashMap<String, String>();
-		config.put(RepoIndex.REPOSITORY_INCREMENT_OVERRIDE, "0");
-		config.put(ResourceIndexer.REPOSITORY_NAME, "full-c+f");
-		config.put(ResourceIndexer.PRETTY, "true");
-		indexer.index(files, out, config);
+		config.put(IndexWriter.REPOSITORY_INCREMENT_OVERRIDE, "0");
+		config.put(IndexWriter.REPOSITORY_NAME, "full-c+f");
+		config.put(IndexWriter.PRETTY, "true");
+		iw.open(out, config);
+		indexer.index(files, iw, config);
+		iw.close();
 		
 		String expected = Utils.readStream(new FileInputStream("testdata/full-03+06.txt"));
 		assertEquals(expected, out.toString());
@@ -233,7 +243,7 @@ public class TestIndexer extends TestCase {
 
 	public void testLogErrorsFromAnalyzer() throws Exception {
 		ResourceAnalyzer badAnalyzer = new ResourceAnalyzer() {
-			public void analyzeResource(Resource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
+			public void analyzeResource(IndexableResource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
 				throw new Exception("Bang!");
 			}
 		};
@@ -251,7 +261,7 @@ public class TestIndexer extends TestCase {
 		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
 		
 		// The "good" analyzer should have been called
-		verify(goodAnalyzer).analyzeResource(any(Resource.class), anyListOf(Capability.class), anyListOf(Requirement.class));
+		verify(goodAnalyzer).analyzeResource(any(IndexableResource.class), anyListOf(Capability.class), anyListOf(Requirement.class));
 		
 		// The log service should have been notified about the exception
 		ArgumentCaptor<Exception> exceptionCaptor = ArgumentCaptor.forClass(Exception.class);

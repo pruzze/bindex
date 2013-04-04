@@ -28,21 +28,6 @@ import java.util.Set;
  */
 public interface ResourceIndexer {
 
-	/** enable pretty-printing: non-gzipped, indented XML */
-	public static final String PRETTY = "pretty";
-
-	/** the default repository name */
-	public static final String REPOSITORYNAME_DEFAULT = "Untitled";
-
-	/** the name of the OBR XML representation */
-	public static final String REPOSITORY_NAME = "repository.name";
-
-	/** the default stylesheet for the OBR XML representation */
-	public static final String STYLESHEET_DEFAULT = "http://www.osgi.org/www/obr2html.xsl";
-
-	/** the stylesheet of the OBR XML representation */
-	public static final String STYLESHEET = "stylesheet";
-
 	/**
 	 * Template for the URLs in the OBR XML representation. It can contain the
 	 * following symbols:
@@ -70,14 +55,14 @@ public interface ResourceIndexer {
 	 * 
 	 * @param files
 	 *            a set of input files
-	 * @param out
-	 *            the OutputStream to write the OBR XML representation
+	 * @param iw
+	 *            the IndexWriter to write the OBR XML representation
 	 * @param config
 	 *            a set of optional parameters (use the interface constants as
 	 *            keys)
 	 * @throws Exception
 	 */
-	void index(Set<File> files, OutputStream out, Map<String, String> config) throws Exception;
+	void index(Set<File> files, IndexWriter iw, Map<String, String> config) throws Exception;
 
 	/**
 	 * Index a set of input files and write a Repository XML fragment to the

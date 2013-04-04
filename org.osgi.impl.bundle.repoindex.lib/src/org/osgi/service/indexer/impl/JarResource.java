@@ -16,9 +16,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 
-class JarResource implements Resource {
+class JarResource implements IndexableResource {
 	
 	private final File file;
 	private final JarFile jarFile;
@@ -100,7 +100,7 @@ class JarResource implements Resource {
 	public Manifest getManifest() throws IOException {
 		synchronized (this) { 
 			if (manifest == null) {
-				Resource manifestResource = getChild("META-INF/MANIFEST.MF");
+				IndexableResource manifestResource = getChild("META-INF/MANIFEST.MF");
 				if (manifestResource != null) {
 					try {
 						manifest = new Manifest(manifestResource.getStream());
@@ -126,7 +126,7 @@ class JarResource implements Resource {
 		return result;
 	}
 
-	public Resource getChild(String path) throws IOException {
+	public IndexableResource getChild(String path) throws IOException {
 		String childLocation = getLocation() + "#" + path;
 		
 		JarEntry entry = paths.get(path);

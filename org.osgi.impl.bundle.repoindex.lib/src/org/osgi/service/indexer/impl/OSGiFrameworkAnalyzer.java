@@ -7,7 +7,7 @@ import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.log.LogService;
 
@@ -26,8 +26,8 @@ public class OSGiFrameworkAnalyzer implements ResourceAnalyzer {
 		this.log = log;
 	}
 
-	public void analyzeResource(Resource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
-		Resource fwkFactorySvc = resource.getChild(SERVICE_FRAMEWORK_FACTORY);
+	public void analyzeResource(IndexableResource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
+		IndexableResource fwkFactorySvc = resource.getChild(SERVICE_FRAMEWORK_FACTORY);
 		if (fwkFactorySvc != null) {
 			Builder builder = new Builder().setNamespace(Namespaces.NS_CONTRACT).addAttribute(Namespaces.NS_CONTRACT, Namespaces.CONTRACT_OSGI_FRAMEWORK);
 

@@ -13,7 +13,7 @@ import org.osgi.framework.Version;
 import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionRange;
@@ -46,7 +46,7 @@ public class KnownBundleAnalyzer implements ResourceAnalyzer {
 		this.extraProperties = extras;
 	}
 	
-	public void analyzeResource(Resource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
+	public void analyzeResource(IndexableResource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
 		SymbolicName resourceName;
 		try {
 			resourceName = Util.getSymbolicName(resource);
@@ -67,7 +67,7 @@ public class KnownBundleAnalyzer implements ResourceAnalyzer {
 			}
 	}
 
-	private static void processPropertyName(Resource resource, List<Capability> caps, List<Requirement> reqs, SymbolicName resourceName, String name, Properties... propertiesList) throws IOException {
+	private static void processPropertyName(IndexableResource resource, List<Capability> caps, List<Requirement> reqs, SymbolicName resourceName, String name, Properties... propertiesList) throws IOException {
 		String[] bundleRef = name.split(";");
 		String bsn = bundleRef[0];
 		

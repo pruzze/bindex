@@ -21,7 +21,7 @@ import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionKey;
@@ -50,7 +50,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		this.log = log;
 	}
 
-	public void analyzeResource(Resource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
+	public void analyzeResource(IndexableResource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
 		MimeType mimeType = Util.getMimeType(resource);
 		if (mimeType == MimeType.Bundle || mimeType == MimeType.Fragment) {
 			doBundleIdentity(resource, mimeType, capabilities);
@@ -72,7 +72,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}	
 
-	private void doBundleIdentity(Resource resource, MimeType mimeType, List<? super Capability> caps) throws Exception {
+	private void doBundleIdentity(IndexableResource resource, MimeType mimeType, List<? super Capability> caps) throws Exception {
 		Manifest manifest = resource.getManifest();
 		if (manifest == null)
 			throw new IllegalArgumentException("Missing bundle manifest.");
@@ -105,8 +105,8 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		caps.add(builder.buildCapability());
 	}
 	
-	private void doPlainJarIdentity(Resource resource, List<? super Capability> caps) {
-		String name = (String) resource.getProperties().get(Resource.NAME);
+	private void doPlainJarIdentity(IndexableResource resource, List<? super Capability> caps) {
+		String name = (String) resource.getProperties().get(IndexableResource.NAME);
 		if (name.toLowerCase().endsWith(SUFFIX_JAR))
 			name = name.substring(0, name.length() - SUFFIX_JAR.length());
 		
@@ -139,7 +139,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		return state.get();
 	}
 	
-	private void doContent(Resource resource, MimeType mimeType, List<? super Capability> capabilities) throws Exception {
+	private void doContent(IndexableResource resource, MimeType mimeType, List<? super Capability> capabilities) throws Exception {
 		Builder builder = new Builder()
 			.setNamespace(Namespaces.NS_CONTENT);
 		
@@ -157,7 +157,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		capabilities.add(builder.buildCapability());
 	}
 	
-	private String calculateSHA(Resource resource) throws IOException, NoSuchAlgorithmException {
+	private String calculateSHA(IndexableResource resource) throws IOException, NoSuchAlgorithmException {
 		MessageDigest digest = MessageDigest.getInstance(SHA_256);
 		byte[] buf = new byte[1024];
 		
@@ -178,7 +178,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		return Hex.toHexString(digest.digest());
 	}
 
-	private String calculateLocation(Resource resource) throws IOException {
+	private String calculateLocation(IndexableResource resource) throws IOException {
 		String location = resource.getLocation();
 		
 		File path = new File(location);
@@ -214,7 +214,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		return result;
 	}
 
-	private void doBundleAndHost(Resource resource, List<? super Capability> caps) throws Exception {
+	private void doBundleAndHost(IndexableResource resource, List<? super Capability> caps) throws Exception {
 		Builder bundleBuilder = new Builder().setNamespace(Namespaces.NS_WIRING_BUNDLE);
 		Builder hostBuilder   = new Builder().setNamespace(Namespaces.NS_WIRING_HOST);
 		boolean allowFragments = true;
@@ -251,7 +251,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			caps.add(hostBuilder.buildCapability());
 	}
 	
-	private void doExports(Resource resource, List<? super Capability> caps) throws Exception {
+	private void doExports(IndexableResource resource, List<? super Capability> caps) throws Exception {
 		Manifest manifest = resource.getManifest();
 		
 		String exportsStr = manifest.getMainAttributes().getValue(Constants.EXPORT_PACKAGE);
@@ -285,7 +285,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 
-	private void doImports(Resource resource, List<? super Requirement> reqs) throws Exception {
+	private void doImports(IndexableResource resource, List<? super Requirement> reqs) throws Exception {
 		Manifest manifest = resource.getManifest();
 		
 		String importsStr = manifest.getMainAttributes().getValue(Constants.IMPORT_PACKAGE);
@@ -330,7 +330,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private void doRequireBundles(Resource resource, List<? super Requirement> reqs) throws Exception {
+	private void doRequireBundles(IndexableResource resource, List<? super Requirement> reqs) throws Exception {
 		Manifest manifest = resource.getManifest();
 		
 		String requiresStr = manifest.getMainAttributes().getValue(Constants.REQUIRE_BUNDLE);
@@ -362,7 +362,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private void doFragment(Resource resource, List<? super Requirement> reqs) throws Exception {
+	private void doFragment(IndexableResource resource, List<? super Requirement> reqs) throws Exception {
 		Manifest manifest = resource.getManifest();
 		String fragmentHost = manifest.getMainAttributes().getValue(Constants.FRAGMENT_HOST);
 		
@@ -389,7 +389,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private void doExportService(Resource resource, List<? super Capability> caps) throws Exception {
+	private void doExportService(IndexableResource resource, List<? super Capability> caps) throws Exception {
 		@SuppressWarnings("deprecation")
 		String exportsStr = resource.getManifest().getMainAttributes().getValue(Constants.EXPORT_SERVICE);
 		Map<String, Map<String, String>> exports = OSGiHeader.parseHeader(exportsStr);
@@ -406,7 +406,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private void doImportService(Resource resource, List<? super Requirement> reqs) throws Exception {
+	private void doImportService(IndexableResource resource, List<? super Requirement> reqs) throws Exception {
 		@SuppressWarnings("deprecation")
 		String importsStr = resource.getManifest().getMainAttributes().getValue(Constants.IMPORT_SERVICE);
 		Map<String, Map<String, String>> imports = OSGiHeader.parseHeader(importsStr);
@@ -424,7 +424,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private void doBREE(Resource resource, List<? super Requirement> reqs) throws Exception {
+	private void doBREE(IndexableResource resource, List<? super Requirement> reqs) throws Exception {
 		String breeStr = resource.getManifest().getMainAttributes().getValue(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT);
 		Map<String, Map<String, String>> brees = OSGiHeader.parseHeader(breeStr);
 		
@@ -451,7 +451,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 	
-	private void doCapabilities(Resource resource, final List<? super Capability> caps) throws Exception {
+	private void doCapabilities(IndexableResource resource, final List<? super Capability> caps) throws Exception {
 		String capsStr = resource.getManifest().getMainAttributes().getValue(PROVIDE_CAPABILITY);
 		buildFromHeader(capsStr, new Yield<Builder>() {
 			public void yield(Builder builder) {
@@ -460,7 +460,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		});
 	}
 	
-	private void doRequirements(Resource resource, final List<? super Requirement> reqs) throws IOException {
+	private void doRequirements(IndexableResource resource, final List<? super Requirement> reqs) throws IOException {
 		String reqsStr = resource.getManifest().getMainAttributes().getValue(REQUIRE_CAPABILITY);
 		buildFromHeader(reqsStr, new Yield<Builder>() {
 			public void yield(Builder builder) {
@@ -469,7 +469,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		});
 	}
 	
-	private void doBundleNativeCode(Resource resource, final List<? super Requirement> reqs) throws IOException {
+	private void doBundleNativeCode(IndexableResource resource, final List<? super Requirement> reqs) throws IOException {
 		String nativeHeaderStr = resource.getManifest().getMainAttributes().getValue(Constants.BUNDLE_NATIVECODE);
 		if (nativeHeaderStr == null)
 			return;

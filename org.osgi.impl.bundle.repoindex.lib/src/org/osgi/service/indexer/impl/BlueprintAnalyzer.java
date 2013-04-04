@@ -6,7 +6,7 @@ import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.log.LogService;
 
@@ -21,7 +21,7 @@ public class BlueprintAnalyzer implements ResourceAnalyzer {
 		this.log = log;
 	}
 
-	public void analyzeResource(Resource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
+	public void analyzeResource(IndexableResource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
 		boolean blueprintEnabled = false;
 		
 		String header = resource.getManifest().getMainAttributes().getValue(BUNDLE_BLUEPRINT_HEADER);

@@ -30,8 +30,10 @@ import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.Framework;
+import org.osgi.service.indexer.IndexWriter;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
+import org.osgi.service.indexer.impl.DefaultIndexWriter;
 import org.osgi.service.indexer.impl.KnownBundleAnalyzer;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -79,7 +81,10 @@ public class Index {
 			if (fileList.isEmpty())
 				printUsage();
 			else try {
-				index.index(fileList, new FileOutputStream(outputFile), config);
+				IndexWriter iw = new DefaultIndexWriter();
+				iw.open(new FileOutputStream(outputFile), config);
+				index.index(fileList, iw, config);
+				iw.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -102,10 +107,10 @@ public class Index {
 			try {
 				if (args[i].startsWith("-n")) {
 					String repoName = args[++i];
-					config.put(ResourceIndexer.REPOSITORY_NAME, repoName);
+					config.put(IndexWriter.REPOSITORY_NAME, repoName);
 				} else if (args[i].equals("-stylesheet")) {
 					String styleSheet = args[++i];
-					config.put(ResourceIndexer.STYLESHEET, styleSheet);
+					config.put(IndexWriter.STYLESHEET, styleSheet);
 				} else if (args[i].startsWith("-r")) {
 					output = new File(args[++i]);
 				} else if (args[i].startsWith("-v")) {
@@ -120,7 +125,7 @@ public class Index {
 					config.put(ResourceIndexer.LICENSE_URL, licenceUrl);
 				} else if (args[i].equalsIgnoreCase("--pretty")) {
 					output = new File(DEFAULT_FILENAME_UNCOMPRESSED);
-					config.put(ResourceIndexer.PRETTY, Boolean.toString(true));
+					config.put(IndexWriter.PRETTY, Boolean.toString(true));
 				} else if (args[i].equals("-K")) {
 					knownBundleAnalyzer = new KnownBundleAnalyzer(new Properties());
 				} else if (args[i].equals("-k")) {

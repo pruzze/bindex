@@ -31,7 +31,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.log.LogService;
@@ -117,7 +117,7 @@ public class TestOSGiServices extends TestCase {
 		
 		// Register a broken analyzer that throws exceptions
 		ResourceAnalyzer brokenAnalyzer = new ResourceAnalyzer() {
-			public void analyzeResource(Resource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
+			public void analyzeResource(IndexableResource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
 				throw new Exception("Bang!");
 			}
 		};

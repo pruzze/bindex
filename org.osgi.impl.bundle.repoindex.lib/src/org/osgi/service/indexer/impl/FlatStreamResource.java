@@ -7,9 +7,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.jar.Manifest;
 
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 
-class FlatStreamResource implements Resource {
+class FlatStreamResource implements IndexableResource {
 	
 	private final String location;
 	private final InputStream stream;
@@ -48,7 +48,7 @@ class FlatStreamResource implements Resource {
 		return null;
 	}
 
-	public Resource getChild(String path) throws IOException {
+	public IndexableResource getChild(String path) throws IOException {
 		return null;
 	}
 

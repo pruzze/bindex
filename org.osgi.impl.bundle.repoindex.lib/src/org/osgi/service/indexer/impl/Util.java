@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.osgi.service.indexer.Builder;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.impl.types.ScalarType;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionKey;
@@ -24,7 +24,7 @@ import org.osgi.service.indexer.impl.util.QuotedTokenizer;
 
 public class Util {
 	
-	public static SymbolicName getSymbolicName(Resource resource) throws IOException {
+	public static SymbolicName getSymbolicName(IndexableResource resource) throws IOException {
 		Manifest manifest = resource.getManifest();
 		if (manifest == null)
 			throw new IllegalArgumentException(String.format("Cannot identify symbolic name for resource %s: manifest unavailable", resource.getLocation()));
@@ -41,7 +41,7 @@ public class Util {
 		return new SymbolicName(entry.getKey(), entry.getValue());
 	}
 	
-	public static Version getVersion(Resource resource) throws IOException {
+	public static Version getVersion(IndexableResource resource) throws IOException {
 		Manifest manifest = resource.getManifest();
 		if (manifest == null)
 			throw new IllegalArgumentException(String.format("Cannot identify version for resource %s: manifest unavailable", resource.getLocation()));
@@ -50,7 +50,7 @@ public class Util {
 		return version;
 	}
 
-	public static MimeType getMimeType(Resource resource) throws IOException {
+	public static MimeType getMimeType(IndexableResource resource) throws IOException {
 		Manifest manifest = resource.getManifest();
 		if (manifest == null)
 			return MimeType.Jar;
@@ -203,7 +203,7 @@ public class Util {
 	 * @return
 	 * @throws IOException 
 	 */
-	public static final List<String> findMatchingPaths(Resource resource, String globPattern) throws IOException {
+	public static final List<String> findMatchingPaths(IndexableResource resource, String globPattern) throws IOException {
 		String prefix;
 		String suffix;
 		
