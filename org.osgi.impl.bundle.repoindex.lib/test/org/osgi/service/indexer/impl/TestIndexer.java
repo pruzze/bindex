@@ -127,7 +127,6 @@ public class TestIndexer extends TestCase {
 	public void testEmptyIndex() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
-		IndexWriter iw = new DefaultIndexWriter();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = Collections.emptySet();
 
@@ -135,7 +134,7 @@ public class TestIndexer extends TestCase {
 		config.put(IndexWriter.REPOSITORY_INCREMENT_OVERRIDE, "0");
 		config.put(IndexWriter.REPOSITORY_NAME, "empty");
 		config.put(IndexWriter.PRETTY, "true");
-		iw.open(out, config);
+		IndexWriter iw = new DefaultIndexWriter(out, config);
 		indexer.index(files, iw, config);
 		iw.close();
 		
@@ -146,7 +145,6 @@ public class TestIndexer extends TestCase {
 	public void testFullIndex() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
-		IndexWriter iw = new DefaultIndexWriter();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/03-export.jar"));
@@ -155,7 +153,7 @@ public class TestIndexer extends TestCase {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(IndexWriter.REPOSITORY_INCREMENT_OVERRIDE, "0");
 		config.put(IndexWriter.REPOSITORY_NAME, "full-c+f");
-		iw.open(out, config);
+		IndexWriter iw = new DefaultIndexWriter(out, config);
 		indexer.index(files, iw, config);
 		iw.close();
 		
@@ -167,7 +165,6 @@ public class TestIndexer extends TestCase {
 	public void testFullIndexPrettyPrint() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
-		IndexWriter iw = new DefaultIndexWriter();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/03-export.jar"));
@@ -177,7 +174,7 @@ public class TestIndexer extends TestCase {
 		config.put(IndexWriter.REPOSITORY_INCREMENT_OVERRIDE, "0");
 		config.put(IndexWriter.REPOSITORY_NAME, "full-c+f");
 		config.put(IndexWriter.PRETTY, "true");
-		iw.open(out, config);
+		IndexWriter iw = new DefaultIndexWriter(out, config);
 		indexer.index(files, iw, config);
 		iw.close();
 		

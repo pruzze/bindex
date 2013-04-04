@@ -1,8 +1,6 @@
 package org.osgi.service.indexer;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
 
 public interface IndexWriter {
 	
@@ -23,10 +21,22 @@ public interface IndexWriter {
 	
 	String REPOSITORY_INCREMENT_OVERRIDE = "-repository.increment.override";
 
-	void open(OutputStream out, Map<String, String> config) throws IOException;
-
+	/**
+	 * Write out the representation of the given resource.
+	 * 
+	 * @param resource
+	 *            a Resource
+	 * @throws IOException
+	 */
 	void write(Resource resource) throws IOException;
 
+	/**
+	 * Closes the writer, flushing and closing underlying stream if applicable.
+	 * 
+	 * {@link IndexWriter#write(Resource)} may not be called after the writer is
+	 * closed.
+	 * 
+	 * @throws IOException
+	 */
 	void close() throws IOException;
-	
 }

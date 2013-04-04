@@ -81,8 +81,7 @@ public class Index {
 			if (fileList.isEmpty())
 				printUsage();
 			else try {
-				IndexWriter iw = new DefaultIndexWriter();
-				iw.open(new FileOutputStream(outputFile), config);
+				IndexWriter iw = new DefaultIndexWriter(new FileOutputStream(outputFile), config);
 				index.index(fileList, iw, config);
 				iw.close();
 			} catch (Exception e) {

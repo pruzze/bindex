@@ -22,15 +22,13 @@ import org.osgi.service.indexer.impl.util.Tag;
  */
 public class DefaultIndexWriter implements IndexWriter {
 
-	private volatile Thread owner;
+	private final Thread owner;
 
-	private PrintWriter pw;
+	private final PrintWriter pw;
 
-	private Indent indent;
+	private final Indent indent;
 
-	public void open(OutputStream out, Map<String, String> config) throws IOException {
-		if (owner != null || pw != null)
-			throw new RuntimeException("writer is already in use");
+	public DefaultIndexWriter(OutputStream out, Map<String, String> config) throws IOException {
 		owner = Thread.currentThread();
 		
 		if (config == null)
@@ -116,13 +114,10 @@ public class DefaultIndexWriter implements IndexWriter {
 
 		pw.flush();
 		pw.close();
-		pw = null;
-		owner = null;
 	}
 
 	private void checkThread() {
 		if (Thread.currentThread() != owner)
 			throw new RuntimeException("writer used from wrong thread");
 	}
-
 }
