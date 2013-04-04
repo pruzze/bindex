@@ -4,9 +4,9 @@ import static org.example.tests.utils.Utils.copyToTempFile;
 import static org.example.tests.utils.Utils.createTempDir;
 import static org.example.tests.utils.Utils.deleteWithException;
 import static org.example.tests.utils.Utils.readStream;
+import static org.example.tests.utils.Utils.writeFragment;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,15 +24,17 @@ public class TestStandaloneLibrary extends TestCase {
 	public void testBasicServiceInvocation() throws Exception {
 		ResourceIndexer indexer = new RepoIndex();
 		
-		StringWriter writer = new StringWriter();
+		
 		File tempDir = createTempDir();
 		File tempFile = copyToTempFile(tempDir, "testdata/01-bsn+version.jar");
 
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(Collections.singleton(tempFile), writer, config);
 		
-		assertEquals(readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/fragment-basic.txt")), writer.toString().trim());
+		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/fragment-basic.txt")); 
+		
+		assertEquals(expected, actual);
 		
 		deleteWithException(tempDir);
 	}
@@ -41,15 +43,16 @@ public class TestStandaloneLibrary extends TestCase {
 		RepoIndex indexer = new RepoIndex();
 		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
 		
-		StringWriter writer = new StringWriter();
 		File tempDir = createTempDir();
 		File tempFile = copyToTempFile(tempDir, "testdata/org.eclipse.equinox.ds-1.4.0.jar");
 
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(Collections.singleton(tempFile), writer, config);
 		
-		assertEquals(readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.fragment.txt")), writer.toString().trim());
+		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.fragment.txt"));
+		
+		assertEquals(expected, actual);
 		
 		deleteWithException(tempDir);
 	}
@@ -64,31 +67,34 @@ public class TestStandaloneLibrary extends TestCase {
 		RepoIndex indexer = new RepoIndex();
 		indexer.addAnalyzer(knownBundlesAnalyzer, FrameworkUtil.createFilter("(name=*)"));
 		
-		StringWriter writer = new StringWriter();
 		File tempDir = createTempDir();
 		File tempFile = copyToTempFile(tempDir, "testdata/org.eclipse.equinox.ds-1.4.0.jar");
 
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(Collections.singleton(tempFile), writer, config);
 		
-		assertEquals(readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.extra-fragment.txt")), writer.toString().trim());
+		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.extra-fragment.txt"));
 		
-		deleteWithException(tempDir);	}
+		assertEquals(expected, actual);
+		
+		deleteWithException(tempDir);
+	}
 	
 	public void testPlainJar() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		
-		StringWriter writer = new StringWriter();
 		File tempDir = createTempDir();
 		File tempFile = copyToTempFile(tempDir, "testdata/jcip-annotations.jar");
 
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(Collections.singleton(tempFile), writer, config);
 		
-		assertEquals(readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/plainjar.fragment.txt")), writer.toString().trim());
+		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/plainjar.fragment.txt"));
 		
-		deleteWithException(tempDir);		}
-
+		assertEquals(expected, actual);
+		
+		deleteWithException(tempDir);
+	}
 }

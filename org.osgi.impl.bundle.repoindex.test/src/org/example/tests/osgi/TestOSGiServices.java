@@ -4,6 +4,7 @@ import static org.example.tests.utils.Utils.copyToTempFile;
 import static org.example.tests.utils.Utils.createTempDir;
 import static org.example.tests.utils.Utils.deleteWithException;
 import static org.example.tests.utils.Utils.readStream;
+import static org.example.tests.utils.Utils.writeFragment;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -11,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -30,8 +30,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.indexer.Capability;
-import org.osgi.service.indexer.Requirement;
 import org.osgi.service.indexer.IndexableResource;
+import org.osgi.service.indexer.Requirement;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.log.LogService;
@@ -56,13 +56,13 @@ public class TestOSGiServices extends TestCase {
 		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
 		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
 		
-		StringWriter writer = new StringWriter();
-		
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(Collections.singleton(copyToTempFile(tempDir, "testdata/01-bsn+version.jar")), writer, config);
 		
-		assertEquals(readStream(TestOSGiServices.class.getResourceAsStream("/testdata/fragment-basic.txt")), writer.toString().trim());
+		String actual = writeFragment(indexer, Collections.singleton(copyToTempFile(tempDir, "testdata/01-bsn+version.jar")), config);
+		String expected = readStream(TestOSGiServices.class.getResourceAsStream("/testdata/fragment-basic.txt"));
+		
+		assertEquals(actual, expected);
 		
 		context.ungetService(ref);
 	}
@@ -73,13 +73,14 @@ public class TestOSGiServices extends TestCase {
 		
 		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
 		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
-		StringWriter writer = new StringWriter();
 		
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(Collections.singleton(copyToTempFile(tempDir, "testdata/01-bsn+version.jar")), writer, config);
+
+		String actual = writeFragment(indexer, Collections.singleton(copyToTempFile(tempDir, "testdata/01-bsn+version.jar")), config);
+		String expected = readStream(TestOSGiServices.class.getResourceAsStream("/testdata/fragment-wibble.txt"));
 		
-		assertEquals(readStream(TestOSGiServices.class.getResourceAsStream("/testdata/fragment-wibble.txt")), writer.toString().trim());
+		assertEquals(actual, expected);
 		
 		context.ungetService(ref);
 		reg.unregister();
@@ -93,7 +94,6 @@ public class TestOSGiServices extends TestCase {
 		
 		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
 		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
-		StringWriter writer = new StringWriter();
 		
 		Set<File> files = new LinkedHashSet<File>();
 		files.add(copyToTempFile(tempDir, "testdata/01-bsn+version.jar"));
@@ -101,9 +101,11 @@ public class TestOSGiServices extends TestCase {
 		
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(files, writer, config);
 		
-		assertEquals(readStream(TestOSGiServices.class.getResourceAsStream("/testdata/fragment-wibble-filtered.txt")), writer.toString().trim());
+		String actual = writeFragment(indexer, files, config);
+		String expected = readStream(TestOSGiServices.class.getResourceAsStream("/testdata/fragment-wibble-filtered.txt"));
+		
+		assertEquals(actual, expected);
 		
 		context.ungetService(ref);
 		reg.unregister();
@@ -126,11 +128,10 @@ public class TestOSGiServices extends TestCase {
 		// Call the indexer
 		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
 		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
-		StringWriter writer = new StringWriter();
 		Set<File> files = Collections.singleton(copyToTempFile(tempDir, "testdata/01-bsn+version.jar"));
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
-		indexer.indexFragment(files, writer, config);
+		writeFragment(indexer, files, config);
 		
 		// Verify log output
 		ArgumentCaptor<Exception> exceptionCaptor = ArgumentCaptor.forClass(Exception.class);

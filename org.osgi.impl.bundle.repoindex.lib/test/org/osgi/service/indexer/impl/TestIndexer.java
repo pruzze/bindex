@@ -110,6 +110,14 @@ public class TestIndexer extends TestCase {
 	public void testFragmentRequireSCR1_2() throws Exception {
 		assertFragmentMatch("testdata/fragment-scr1_2.txt", "testdata/scr1_2.jar");
 	}
+	
+	private static String writeFragment(RepoIndex indexer, Set<File> files, Map<String, String> config) throws Exception {
+		StringWriter sw = new StringWriter();
+		IndexWriter iw = new DefaultFragmentWriter(sw);
+		indexer.index(files, iw, config);
+		iw.close();
+		return sw.toString().trim();
+	}
 
 	private static void assertFragmentMatch(String expectedPath, String jarPath) throws Exception {
 		RepoIndex indexer = new RepoIndex();
@@ -117,11 +125,9 @@ public class TestIndexer extends TestCase {
 	}
 	
 	private static void assertFragmentMatch(RepoIndex indexer, String expectedPath, String jarPath) throws Exception {
-		StringWriter writer = new StringWriter();
-		indexer.indexFragment(Collections.singleton(new File(jarPath)), writer, null);
-		
+		String actual = writeFragment(indexer, Collections.singleton(new File(jarPath)), null);
 		String expected = Utils.readStream(new FileInputStream(expectedPath));
-		assertEquals(expected, writer.toString().trim());
+		assertEquals(expected, actual);
 	}
 	
 	public void testEmptyIndex() throws Exception {
@@ -186,30 +192,28 @@ public class TestIndexer extends TestCase {
 		RepoIndex indexer = new RepoIndex();
 		indexer.addAnalyzer(new WibbleAnalyzer(), null);
 		
-		StringWriter writer = new StringWriter();
 		LinkedHashSet<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/01-bsn+version.jar"));
 		files.add(new File("testdata/02-localization.jar"));
 		
-		indexer.indexFragment(files, writer, null);
+		String actual = writeFragment(indexer, files, null);
 		String expected = Utils.readStream(new FileInputStream("testdata/fragment-wibble.txt"));
 
-		assertEquals(expected, writer.toString().trim());
+		assertEquals(expected, actual);
 	}
 	
 	public void testAddAnalyzerWithFilter() throws Exception {
 		RepoIndex indexer = new RepoIndex();
 		indexer.addAnalyzer(new WibbleAnalyzer(), FrameworkUtil.createFilter("(location=*sion.jar)"));
 		
-		StringWriter writer = new StringWriter();
 		LinkedHashSet<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/01-bsn+version.jar"));
 		files.add(new File("testdata/02-localization.jar"));
 		
-		indexer.indexFragment(files, writer, null);
+		String actual = writeFragment(indexer, files, null);
 		String expected = Utils.readStream(new FileInputStream("testdata/fragment-wibble-filtered.txt"));
 
-		assertEquals(expected, writer.toString().trim());
+		assertEquals(expected, actual);
 	}
 	
 	public void testRootInSubdirectory() throws Exception {
@@ -218,11 +222,10 @@ public class TestIndexer extends TestCase {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
 		
-		StringWriter writer = new StringWriter();
-		indexer.indexFragment(Collections.singleton(new File("testdata/01-bsn+version.jar")), writer, props);
-		
+		String actual = writeFragment(indexer, Collections.singleton(new File("testdata/01-bsn+version.jar")), props);
 		String expected = Utils.readStream(new FileInputStream("testdata/fragment-subdir1.txt"));
-		assertEquals(expected, writer.toString().trim());
+		
+		assertEquals(expected, actual);
 	}
 
 	public void testRootInSubSubdirectory() throws Exception {
@@ -231,11 +234,10 @@ public class TestIndexer extends TestCase {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
 		
-		StringWriter writer = new StringWriter();
-		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
-		
+		String actual = writeFragment(indexer, Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), props);
 		String expected = Utils.readStream(new FileInputStream("testdata/fragment-subdir2.txt"));
-		assertEquals(expected, writer.toString().trim());
+		
+		assertEquals(expected, actual);
 	}
 
 	public void testLogErrorsFromAnalyzer() throws Exception {
@@ -254,8 +256,8 @@ public class TestIndexer extends TestCase {
 		// Run the indexer
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
-		StringWriter writer = new StringWriter();
-		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
+		
+		writeFragment(indexer, Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), props);
 		
 		// The "good" analyzer should have been called
 		verify(goodAnalyzer).analyzeResource(any(IndexableResource.class), anyListOf(Capability.class), anyListOf(Requirement.class));
@@ -273,8 +275,7 @@ public class TestIndexer extends TestCase {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(ResourceIndexer.ROOT_URL, new File("testdata/subdir").getAbsoluteFile().toURI().toURL().toString());
 		
-		StringWriter writer = new StringWriter();
-		indexer.indexFragment(Collections.singleton(new File("testdata/01-bsn+version.jar")), writer, props);
+		writeFragment(indexer, Collections.singleton(new File("testdata/01-bsn+version.jar")), props);
 		
 		verify(log).log(eq(LogService.LOG_ERROR), anyString(), isA(IllegalArgumentException.class));
 	}
@@ -287,8 +288,7 @@ public class TestIndexer extends TestCase {
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
 		
-		StringWriter writer = new StringWriter();
-		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
+		writeFragment(indexer, Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), props);
 		
 		verify(log).log(eq(LogService.LOG_ERROR), anyString(), isA(UnsupportedOperationException.class));
 	}

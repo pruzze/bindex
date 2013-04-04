@@ -6,6 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Map;
+import java.util.Set;
+
+import org.osgi.service.indexer.IndexWriter;
+import org.osgi.service.indexer.ResourceIndexer;
+import org.osgi.service.indexer.impl.DefaultFragmentWriter;
 
 public class Utils {
 	
@@ -102,6 +109,14 @@ public class Utils {
 		
 		Utils.copyFully(Utils.class.getResourceAsStream("/" + resourcePath), new FileOutputStream(tempFile));
 		return tempFile;
+	}
+	
+	public static String writeFragment(ResourceIndexer indexer, Set<File> files, Map<String, String> config) throws Exception {
+		StringWriter sw = new StringWriter();
+		IndexWriter iw = new DefaultFragmentWriter(sw);
+		indexer.index(files, iw, config);
+		iw.close();
+		return sw.toString().trim();
 	}
 
 }

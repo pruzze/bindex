@@ -5,15 +5,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
-import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.IndexWriter;
-import org.osgi.service.indexer.Requirement;
 import org.osgi.service.indexer.Resource;
-import org.osgi.service.indexer.impl.types.TypedAttribute;
 import org.osgi.service.indexer.impl.util.Indent;
 import org.osgi.service.indexer.impl.util.Tag;
 
@@ -62,49 +58,9 @@ public class DefaultIndexWriter implements IndexWriter {
 
 	public void write(Resource resource) throws IOException {
 		checkThread();
-		write(resource, indent.next(), pw);
-	}
-	
-	public static void write(Resource resource, Indent indent, PrintWriter pw) throws IOException {
-
-		Tag resourceTag = new Tag(Schema.ELEM_RESOURCE);
-		for (Capability cap : resource.getCapabilities(null)) {
-			Tag capTag = new Tag(Schema.ELEM_CAPABILITY);
-			capTag.addAttribute(Schema.ATTR_NAMESPACE, cap.getNamespace());
-
-			appendAttributeAndDirectiveTags(capTag, cap.getAttributes(), cap.getDirectives());
-
-			resourceTag.addContent(capTag);
-		}
-
-		for (Requirement req : resource.getRequirements(null)) {
-			Tag reqTag = new Tag(Schema.ELEM_REQUIREMENT);
-			reqTag.addAttribute(Schema.ATTR_NAMESPACE, req.getNamespace());
-
-			appendAttributeAndDirectiveTags(reqTag, req.getAttributes(), req.getDirectives());
-
-			resourceTag.addContent(reqTag);
-		}
-
-		resourceTag.print(indent, pw);
+		DefaultFragmentWriter.write(resource, indent.next(), pw);
 	}
 
-	private static void appendAttributeAndDirectiveTags(Tag parentTag, Map<String, Object> attribs, Map<String, String> directives) {
-		for (Entry<String, Object> attribEntry : attribs.entrySet()) {
-			Tag attribTag = new Tag(Schema.ELEM_ATTRIBUTE);
-			attribTag.addAttribute(Schema.ATTR_NAME, attribEntry.getKey());
-
-			TypedAttribute typedAttrib = TypedAttribute.create(attribEntry.getKey(), attribEntry.getValue());
-			parentTag.addContent(typedAttrib.toXML());
-		}
-
-		for (Entry<String, String> directiveEntry : directives.entrySet()) {
-			Tag directiveTag = new Tag(Schema.ELEM_DIRECTIVE);
-			directiveTag.addAttribute(Schema.ATTR_NAME, directiveEntry.getKey());
-			directiveTag.addAttribute(Schema.ATTR_VALUE, directiveEntry.getValue());
-			parentTag.addContent(directiveTag);
-		}
-	}
 
 	public void close() throws IOException {
 		checkThread();

@@ -84,19 +84,6 @@ public class RepoIndex implements ResourceIndexer {
 			iw.write(resource);
 		}
 	}
-
-	public void indexFragment(Set<File> files, Writer out, Map<String, String> config) throws Exception {
-		PrintWriter pw;
-		if (out instanceof PrintWriter)
-			pw = (PrintWriter) out;
-		else
-			pw = new PrintWriter(out);
-		
-		for (File file : files) {
-			Resource resource = generateResource(file, config);
-			DefaultIndexWriter.write(resource, Indent.PRETTY, pw);
-		}
-	}
 	
 	private Resource generateResource(File file, Map<String, String> config) throws Exception {
 		
