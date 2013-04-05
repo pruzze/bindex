@@ -7,7 +7,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.jar.Manifest;
 
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 
 class FlatStreamResource implements IndexableResource {
 	
@@ -22,6 +24,10 @@ class FlatStreamResource implements IndexableResource {
 		
 		properties.put(NAME, name);
 		properties.put(LOCATION, location);
+	}
+	
+	public Builder newBuilder() {
+		return new BuilderImpl();
 	}
 	
 	public String getLocation() {

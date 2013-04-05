@@ -13,6 +13,8 @@ public interface IndexableResource {
 	static String SIZE = "size";
 	static String LAST_MODIFIED = "lastmodified";
 	
+	Builder newBuilder();
+	
 	String getLocation();
 	
 	Dictionary<String, Object> getProperties();

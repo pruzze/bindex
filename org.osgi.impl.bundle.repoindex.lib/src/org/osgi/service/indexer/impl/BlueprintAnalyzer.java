@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.ResourceAnalyzer;
-import org.osgi.service.indexer.impl.util.Builder;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 import org.osgi.service.log.LogService;
 
 public class BlueprintAnalyzer implements ResourceAnalyzer {
@@ -44,7 +45,7 @@ public class BlueprintAnalyzer implements ResourceAnalyzer {
 	}
 
 	private Requirement createRequirement() {
-		Builder builder = new Builder().setNamespace(Namespaces.NS_EXTENDER);
+		Builder builder = new BuilderImpl().setNamespace(Namespaces.NS_EXTENDER);
 		String filter = String.format("(&(%s=%s)(version>=1.0.0)(!(version>=2.0.0)))", Namespaces.NS_EXTENDER, Namespaces.EXTENDER_BLUEPRINT);
 		builder.addDirective(Namespaces.DIRECTIVE_FILTER, filter)
 			.addDirective(Namespaces.DIRECTIVE_EFFECTIVE, Namespaces.EFFECTIVE_ACTIVE);

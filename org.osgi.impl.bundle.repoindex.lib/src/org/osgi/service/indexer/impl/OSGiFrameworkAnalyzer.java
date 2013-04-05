@@ -5,10 +5,11 @@ import java.util.List;
 import org.osgi.framework.Version;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.ResourceAnalyzer;
-import org.osgi.service.indexer.impl.util.Builder;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 import org.osgi.service.log.LogService;
 
 /**
@@ -29,7 +30,7 @@ public class OSGiFrameworkAnalyzer implements ResourceAnalyzer {
 	public void analyzeResource(IndexableResource resource, List<Capability> caps, List<Requirement> reqs) throws Exception {
 		IndexableResource fwkFactorySvc = resource.getChild(SERVICE_FRAMEWORK_FACTORY);
 		if (fwkFactorySvc != null) {
-			Builder builder = new Builder().setNamespace(Namespaces.NS_CONTRACT).addAttribute(Namespaces.NS_CONTRACT, Namespaces.CONTRACT_OSGI_FRAMEWORK);
+			Builder builder = new BuilderImpl().setNamespace(Namespaces.NS_CONTRACT).addAttribute(Namespaces.NS_CONTRACT, Namespaces.CONTRACT_OSGI_FRAMEWORK);
 
 			Version specVersion = null;
 			StringBuilder uses = new StringBuilder();

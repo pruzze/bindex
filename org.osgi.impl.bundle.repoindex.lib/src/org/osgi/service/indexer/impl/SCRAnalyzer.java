@@ -12,12 +12,13 @@ import org.osgi.framework.Version;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.service.component.ComponentConstants;
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.VersionKey;
 import org.osgi.service.indexer.impl.types.VersionRange;
-import org.osgi.service.indexer.impl.util.Builder;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 import org.osgi.service.log.LogService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -82,7 +83,7 @@ public class SCRAnalyzer implements ResourceAnalyzer {
 	}
 
 	private static Requirement createRequirement(VersionRange range) {
-		Builder builder = new Builder().setNamespace(Namespaces.NS_EXTENDER);
+		Builder builder = new BuilderImpl().setNamespace(Namespaces.NS_EXTENDER);
 		
 		StringBuilder filter = new StringBuilder();
 		filter.append('(').append(Namespaces.NS_EXTENDER).append('=').append(Namespaces.EXTENDER_SCR).append(')');

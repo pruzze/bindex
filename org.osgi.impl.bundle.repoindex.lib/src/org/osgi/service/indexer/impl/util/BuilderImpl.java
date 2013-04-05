@@ -6,8 +6,9 @@ import java.util.Map;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Resource;
+import org.osgi.service.indexer.Builder;
 
-public class Builder {
+public class BuilderImpl implements Builder {
 
 	private String namespace = null;
 	private Resource resource;

@@ -13,12 +13,12 @@ import java.util.regex.Pattern;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.impl.types.ScalarType;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionKey;
 import org.osgi.service.indexer.impl.types.VersionRange;
-import org.osgi.service.indexer.impl.util.Builder;
 import org.osgi.service.indexer.impl.util.OSGiHeader;
 import org.osgi.service.indexer.impl.util.QuotedTokenizer;
 

@@ -19,17 +19,16 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionKey;
 import org.osgi.service.indexer.impl.types.VersionRange;
-import org.osgi.service.indexer.impl.util.Builder;
-import org.osgi.service.indexer.impl.util.CapabilityImpl;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 import org.osgi.service.indexer.impl.util.Hex;
 import org.osgi.service.indexer.impl.util.OSGiHeader;
-import org.osgi.service.indexer.impl.util.RequirementImpl;
 import org.osgi.service.indexer.impl.util.Yield;
 import org.osgi.service.log.LogService;
 
@@ -97,7 +96,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		
 		Version version = Util.getVersion(resource);
 		
-		Builder builder = new Builder()
+		Builder builder = new BuilderImpl()
 				.setNamespace(Namespaces.NS_IDENTITY)
 				.addAttribute(Namespaces.NS_IDENTITY, bsn.getName())
 				.addAttribute(Namespaces.ATTR_IDENTITY_TYPE, type)
@@ -124,7 +123,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			}
 		}
 		
-		Builder builder = new Builder()
+		Builder builder = new BuilderImpl()
 			.setNamespace(Namespaces.NS_IDENTITY)
 			.addAttribute(Namespaces.NS_IDENTITY, name)
 			.addAttribute(Namespaces.ATTR_IDENTITY_TYPE, Namespaces.RESOURCE_TYPE_PLAIN_JAR);
@@ -142,7 +141,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 	}
 	
 	private void doContent(IndexableResource resource, MimeType mimeType, List<? super Capability> capabilities) throws Exception {
-		Builder builder = new Builder()
+		Builder builder = new BuilderImpl()
 			.setNamespace(Namespaces.NS_CONTENT);
 		
 		String sha = calculateSHA(resource);
@@ -217,8 +216,8 @@ class BundleAnalyzer implements ResourceAnalyzer {
 	}
 
 	private void doBundleAndHost(IndexableResource resource, List<? super Capability> caps) throws Exception {
-		Builder bundleBuilder = new Builder().setNamespace(Namespaces.NS_WIRING_BUNDLE);
-		Builder hostBuilder   = new Builder().setNamespace(Namespaces.NS_WIRING_HOST);
+		Builder bundleBuilder = new BuilderImpl().setNamespace(Namespaces.NS_WIRING_BUNDLE);
+		Builder hostBuilder   = new BuilderImpl().setNamespace(Namespaces.NS_WIRING_HOST);
 		boolean allowFragments = true;
 		
 		Attributes attribs = resource.getManifest().getMainAttributes();
@@ -259,7 +258,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		String exportsStr = manifest.getMainAttributes().getValue(Constants.EXPORT_PACKAGE);
 		Map<String, Map<String, String>> exports = OSGiHeader.parseHeader(exportsStr);
 		for (Entry<String, Map<String, String>> entry : exports.entrySet()) {
-			Builder builder = new Builder().setNamespace(Namespaces.NS_WIRING_PACKAGE);
+			Builder builder = new BuilderImpl().setNamespace(Namespaces.NS_WIRING_PACKAGE);
 			
 			String pkgName = OSGiHeader.removeDuplicateMarker(entry.getKey());
 			builder.addAttribute(Namespaces.NS_WIRING_PACKAGE, pkgName);
@@ -306,7 +305,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 				filter.append(")");
 			}
 			
-			Builder builder = new Builder()
+			Builder builder = new BuilderImpl()
 				.setNamespace(Namespaces.NS_WIRING_PACKAGE)
 				.addDirective(Namespaces.DIRECTIVE_FILTER, filter.toString());
 			
@@ -354,7 +353,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 				filter.append(")");
 			}
 			
-			Builder builder = new Builder()
+			Builder builder = new BuilderImpl()
 				.setNamespace(Namespaces.NS_WIRING_BUNDLE)
 				.addDirective(Namespaces.DIRECTIVE_FILTER, filter.toString());
 			
@@ -383,7 +382,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			Util.addVersionFilter(filter, version, VersionKey.BundleVersion);
 			filter.append(")");
 			
-			Builder builder = new Builder()
+			Builder builder = new BuilderImpl()
 				.setNamespace(Namespaces.NS_WIRING_HOST)
 				.addDirective(Namespaces.DIRECTIVE_FILTER, filter.toString());
 			
@@ -398,7 +397,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		
 		for (Entry<String, Map<String, String>> export : exports.entrySet()) {
 			String service = OSGiHeader.removeDuplicateMarker(export.getKey());
-			Builder builder = new Builder()
+			Builder builder = new BuilderImpl()
 					.setNamespace(Namespaces.NS_SERVICE)
 					.addAttribute(Constants.OBJECTCLASS, service);
 			for (Entry<String,String> attribEntry : export.getValue().entrySet())
@@ -418,7 +417,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			StringBuilder filter = new StringBuilder();
 			filter.append('(').append(Constants.OBJECTCLASS).append('=').append(service).append(')');
 			
-			Builder builder = new Builder()
+			Builder builder = new BuilderImpl()
 				.setNamespace(Namespaces.NS_SERVICE)
 				.addDirective(Namespaces.DIRECTIVE_FILTER, filter.toString())
 				.addDirective(Namespaces.DIRECTIVE_EFFECTIVE, Namespaces.EFFECTIVE_ACTIVE);
@@ -445,7 +444,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 				filter = builder.toString();
 			}
 			
-			Requirement requirement = new Builder()
+			Requirement requirement = new BuilderImpl()
 			.setNamespace(Namespaces.NS_EE)
 			.addDirective(Namespaces.DIRECTIVE_FILTER, filter)
 			.buildRequirement();
@@ -528,7 +527,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			filter = builder.toString();
 		}
 		
-		Builder builder = new Builder()
+		Builder builder = new BuilderImpl()
 			.setNamespace(Namespaces.NS_NATIVE)
 			.addDirective(Namespaces.DIRECTIVE_FILTER, filter);
 		if (optional)
@@ -578,7 +577,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		
 		for (Entry<String, Map<String, String>> entry : header.entrySet()) {
 			String namespace = OSGiHeader.removeDuplicateMarker(entry.getKey());
-			Builder builder = new Builder().setNamespace(namespace);
+			Builder builder = new BuilderImpl().setNamespace(namespace);
 			
 			Map<String, String> attribs = entry.getValue();
 			Util.copyAttribsToBuilder(builder, attribs);

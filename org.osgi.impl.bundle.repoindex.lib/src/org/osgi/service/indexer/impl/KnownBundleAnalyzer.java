@@ -12,11 +12,12 @@ import java.util.Properties;
 import org.osgi.framework.Version;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionRange;
-import org.osgi.service.indexer.impl.util.Builder;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 import org.osgi.service.indexer.impl.util.OSGiHeader;
 
 public class KnownBundleAnalyzer implements ResourceAnalyzer {
@@ -112,7 +113,7 @@ public class KnownBundleAnalyzer implements ResourceAnalyzer {
 				throw new IllegalArgumentException(MessageFormat.format("Invalid indicator format in known-bundle parsing for bundle  \"{0}\", expected cap=namespace or req=namespace, found \"{1}\".", bundleRef, indicator));
 			}
 
-			Builder builder = new Builder().setNamespace(namespace);
+			Builder builder = new BuilderImpl().setNamespace(namespace);
 				
 			Map<String, String> attribs = entry.getValue();
 			Util.copyAttribsToBuilder(builder, attribs);

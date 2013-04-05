@@ -16,7 +16,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.IndexableResource;
+import org.osgi.service.indexer.impl.util.BuilderImpl;
 
 class JarResource implements IndexableResource {
 	
@@ -56,6 +58,10 @@ class JarResource implements IndexableResource {
 		}
 	}
 	
+	public Builder newBuilder() {
+		return new BuilderImpl();
+	}
+
 	private static String getParentPath(String path) {
 		int index;
 		if (path.endsWith("/")) {
