@@ -18,15 +18,11 @@ import org.osgi.service.indexer.impl.util.Tag;
  */
 public class DefaultIndexWriter implements IndexWriter {
 
-	private final Thread owner;
-
 	private final PrintWriter pw;
 
 	private final Indent indent;
 
 	public DefaultIndexWriter(OutputStream out, Map<String, String> config) throws IOException {
-		owner = Thread.currentThread();
-		
 		if (config == null)
 			config = new HashMap<String, String>(0);
 		
@@ -57,23 +53,15 @@ public class DefaultIndexWriter implements IndexWriter {
 	}
 
 	public void write(Resource resource) throws IOException {
-		checkThread();
 		DefaultFragmentWriter.write(resource, indent.next(), pw);
 	}
 
 
 	public void close() throws IOException {
-		checkThread();
-
 		Tag repoTag = new Tag(Schema.ELEM_REPOSITORY);
 		repoTag.printClose(indent, pw);
 
 		pw.flush();
 		pw.close();
-	}
-
-	private void checkThread() {
-		if (Thread.currentThread() != owner)
-			throw new RuntimeException("writer used from wrong thread");
 	}
 }
