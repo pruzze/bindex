@@ -17,8 +17,6 @@
 package org.osgi.service.indexer;
 
 import java.io.File;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Map;
 import java.util.Set;
 

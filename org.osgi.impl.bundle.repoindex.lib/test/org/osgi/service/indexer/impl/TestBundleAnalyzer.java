@@ -10,8 +10,8 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.osgi.framework.Version;
-import org.osgi.service.indexer.Capability;
-import org.osgi.service.indexer.Requirement;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
 
 public class TestBundleAnalyzer extends TestCase {
 	

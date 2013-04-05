@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
+import org.osgi.resource.Resource;
 import org.osgi.service.indexer.IndexWriter;
-import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.impl.util.Indent;
 import org.osgi.service.indexer.impl.util.Tag;
 

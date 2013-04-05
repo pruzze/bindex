@@ -10,13 +10,13 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.osgi.framework.Version;
-import org.osgi.service.indexer.Builder;
-import org.osgi.service.indexer.Capability;
-import org.osgi.service.indexer.Requirement;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
 import org.osgi.service.indexer.IndexableResource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionRange;
+import org.osgi.service.indexer.impl.util.Builder;
 import org.osgi.service.indexer.impl.util.OSGiHeader;
 
 public class KnownBundleAnalyzer implements ResourceAnalyzer {

@@ -1,18 +1,35 @@
-package org.osgi.service.indexer;
+package org.osgi.service.indexer.impl.util;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Requirement {
+import org.osgi.resource.Requirement;
+import org.osgi.resource.Resource;
 
+public class RequirementImpl implements Requirement {
+
+	private final Resource resource;
 	private final String namespace;
 	private final Map<String, Object> attributes;
 	private final Map<String, String> directives;
 
-	Requirement(String namespace, Map<String, Object> attributes, Map<String, String> directives) {
+	RequirementImpl(Resource resource, String namespace, Map<String, Object> attributes, Map<String, String> directives) {
+		this.resource = resource;
 		this.namespace = namespace;
 		this.attributes = attributes;
 		this.directives = directives;
+	}
+	
+	RequirementImpl(Resource resource, Requirement req) {
+		this.resource = resource;
+		this.namespace = req.getNamespace();
+		this.attributes = new LinkedHashMap<String, Object>(req.getAttributes());
+		this.directives = new LinkedHashMap<String, String>(req.getDirectives());
+	}
+
+	public Resource getResource() {
+		return resource;
 	}
 
 	public String getNamespace() {

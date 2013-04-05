@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import org.osgi.service.indexer.Capability;
-import org.osgi.service.indexer.Requirement;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
 
 public class Utils {
 	public static final String readStream(InputStream stream) throws IOException {

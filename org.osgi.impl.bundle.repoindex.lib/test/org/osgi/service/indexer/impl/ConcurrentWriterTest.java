@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
 
+import org.osgi.resource.Resource;
 import org.osgi.service.indexer.IndexWriter;
-import org.osgi.service.indexer.Resource;
 import org.osgi.service.log.LogService;
 
 public class ConcurrentWriterTest extends TestCase {

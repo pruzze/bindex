@@ -2,6 +2,8 @@ package org.osgi.service.indexer;
 
 import java.io.IOException;
 
+import org.osgi.resource.Resource;
+
 public interface IndexWriter {
 	
 	/** enable pretty-printing: non-gzipped, indented XML */

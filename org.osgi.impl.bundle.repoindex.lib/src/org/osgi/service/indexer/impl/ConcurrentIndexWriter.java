@@ -5,8 +5,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.osgi.resource.Resource;
 import org.osgi.service.indexer.IndexWriter;
-import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.impl.util.ResourceImpl;
 import org.osgi.service.log.LogService;
 
 /**

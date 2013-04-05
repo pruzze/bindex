@@ -1,6 +1,6 @@
 -buildpath: ee.j2se;version='[1.5,1.6)',\
 	org.osgi.impl.bundle.repoindex.api;version=project,\
-	osgi.core;version=4.2,\
+	osgi.core;version=5.0.0,\
 	junit.osgi,\
 	lib/kxml2-min.jar;version=file,\
 	osgi.cmpn,\
@@ -28,6 +28,7 @@ Import-Package:\
 # Export the indexer package. Also export the log service.
 Export-Package:\
 	org.osgi.service.indexer,\
+	org.osgi.resource,\
 	org.osgi.service.log
 	
 Bundle-Version: 0.0.4.${tstamp}

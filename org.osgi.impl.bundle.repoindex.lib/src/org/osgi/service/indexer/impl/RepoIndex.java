@@ -13,14 +13,15 @@ import java.util.Set;
 
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.indexer.Capability;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
+import org.osgi.resource.Resource;
 import org.osgi.service.indexer.IndexWriter;
-import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.indexer.impl.util.AddOnlyList;
 import org.osgi.service.indexer.impl.util.Pair;
+import org.osgi.service.indexer.impl.util.ResourceImpl;
 import org.osgi.service.log.LogService;
 
 public class RepoIndex implements ResourceIndexer {
@@ -128,7 +129,7 @@ public class RepoIndex implements ResourceIndexer {
 			bundleAnalyzer.setStateLocal(null);
 		}
 		
-		return new Resource(reqs, caps);
+		return new ResourceImpl(reqs, caps);
 	}
 
 	private void log(int level, String message, Throwable t) {

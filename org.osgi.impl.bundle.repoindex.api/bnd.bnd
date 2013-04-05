@@ -1,3 +1,6 @@
 Bundle-Version: 0.0.2
-Export-Package: org.osgi.service.indexer
--buildpath: junit.osgi
+Import-Package: org.osgi.resource 
+Export-Package: org.osgi.service.indexer,\
+	org.osgi.resource
+-buildpath: junit.osgi,\
+	osgi.core;version=5.0.0

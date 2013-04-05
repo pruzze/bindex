@@ -17,17 +17,19 @@ import java.util.jar.Manifest;
 
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
-import org.osgi.service.indexer.Builder;
-import org.osgi.service.indexer.Capability;
-import org.osgi.service.indexer.Namespaces;
-import org.osgi.service.indexer.Requirement;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
 import org.osgi.service.indexer.IndexableResource;
+import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionKey;
 import org.osgi.service.indexer.impl.types.VersionRange;
+import org.osgi.service.indexer.impl.util.Builder;
+import org.osgi.service.indexer.impl.util.CapabilityImpl;
 import org.osgi.service.indexer.impl.util.Hex;
 import org.osgi.service.indexer.impl.util.OSGiHeader;
+import org.osgi.service.indexer.impl.util.RequirementImpl;
 import org.osgi.service.indexer.impl.util.Yield;
 import org.osgi.service.log.LogService;
 

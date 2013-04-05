@@ -6,10 +6,10 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.osgi.service.indexer.Capability;
+import org.osgi.resource.Capability;
+import org.osgi.resource.Requirement;
+import org.osgi.resource.Resource;
 import org.osgi.service.indexer.IndexWriter;
-import org.osgi.service.indexer.Requirement;
-import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.impl.types.TypedAttribute;
 import org.osgi.service.indexer.impl.util.Indent;
 import org.osgi.service.indexer.impl.util.Tag;

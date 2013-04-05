@@ -5,7 +5,8 @@
 	de.kalpatec.pojosr.framework;version=0.1.8,\
 	osgi.cmpn;version=4.2,\
 	junit.osgi,\
-	ee.j2se;version='[1.5,1.6)'
+	ee.j2se;version='[1.5,1.6)',\
+	osgi.core;version=5.0.0
 
 # Define Contents
 bindex-pkgs:\
@@ -25,6 +26,7 @@ osgi-pkgs:\
 	org.osgi.framework.launch,\
 	org.osgi.framework.startlevel,\
 	org.osgi.framework.wiring,\
+	org.osgi.resource,\
 	org.osgi.service.packageadmin,\
 	org.osgi.service.startlevel,\
 	org.osgi.service.url,\
