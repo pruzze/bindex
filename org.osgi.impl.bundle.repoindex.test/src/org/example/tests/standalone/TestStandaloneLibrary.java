@@ -15,7 +15,9 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.indexer.IndexWriterFactory;
 import org.osgi.service.indexer.ResourceIndexer;
+import org.osgi.service.indexer.impl.IndexWriterFactoryImpl;
 import org.osgi.service.indexer.impl.KnownBundleAnalyzer;
 import org.osgi.service.indexer.impl.RepoIndex;
 
@@ -23,7 +25,7 @@ public class TestStandaloneLibrary extends TestCase {
 
 	public void testBasicServiceInvocation() throws Exception {
 		ResourceIndexer indexer = new RepoIndex();
-		
+		IndexWriterFactory iwf = new IndexWriterFactoryImpl();
 		
 		File tempDir = createTempDir();
 		File tempFile = copyToTempFile(tempDir, "testdata/01-bsn+version.jar");
@@ -31,7 +33,7 @@ public class TestStandaloneLibrary extends TestCase {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
 		
-		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String actual = writeFragment(indexer, iwf, Collections.singleton(tempFile), config);
 		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/fragment-basic.txt")); 
 		
 		assertEquals(expected, actual);
@@ -41,6 +43,7 @@ public class TestStandaloneLibrary extends TestCase {
 	
 	public void testKnownBundleRecognition() throws Exception {
 		RepoIndex indexer = new RepoIndex();
+		IndexWriterFactory iwf = new IndexWriterFactoryImpl();
 		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
 		
 		File tempDir = createTempDir();
@@ -49,7 +52,7 @@ public class TestStandaloneLibrary extends TestCase {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
 		
-		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String actual = writeFragment(indexer, iwf, Collections.singleton(tempFile), config);
 		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.fragment.txt"));
 		
 		assertEquals(expected, actual);
@@ -65,6 +68,7 @@ public class TestStandaloneLibrary extends TestCase {
 		knownBundlesAnalyzer.setKnownBundlesExtra(extras);
 		
 		RepoIndex indexer = new RepoIndex();
+		IndexWriterFactory iwf = new IndexWriterFactoryImpl();
 		indexer.addAnalyzer(knownBundlesAnalyzer, FrameworkUtil.createFilter("(name=*)"));
 		
 		File tempDir = createTempDir();
@@ -73,7 +77,7 @@ public class TestStandaloneLibrary extends TestCase {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
 		
-		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String actual = writeFragment(indexer, iwf, Collections.singleton(tempFile), config);
 		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.extra-fragment.txt"));
 		
 		assertEquals(expected, actual);
@@ -83,6 +87,7 @@ public class TestStandaloneLibrary extends TestCase {
 	
 	public void testPlainJar() throws Exception {
 		RepoIndex indexer = new RepoIndex();
+		IndexWriterFactory iwf = new IndexWriterFactoryImpl();
 		
 		File tempDir = createTempDir();
 		File tempFile = copyToTempFile(tempDir, "testdata/jcip-annotations.jar");
@@ -90,7 +95,7 @@ public class TestStandaloneLibrary extends TestCase {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
 		
-		String actual = writeFragment(indexer, Collections.singleton(tempFile), config);
+		String actual = writeFragment(indexer, iwf, Collections.singleton(tempFile), config);
 		String expected = readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/plainjar.fragment.txt"));
 		
 		assertEquals(expected, actual);

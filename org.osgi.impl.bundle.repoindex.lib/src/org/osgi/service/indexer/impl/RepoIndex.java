@@ -3,8 +3,6 @@ package org.osgi.service.indexer.impl;
 import static org.osgi.framework.FrameworkUtil.createFilter;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -22,7 +20,6 @@ import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.indexer.impl.util.AddOnlyList;
-import org.osgi.service.indexer.impl.util.Indent;
 import org.osgi.service.indexer.impl.util.Pair;
 import org.osgi.service.log.LogService;
 

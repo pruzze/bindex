@@ -11,25 +11,25 @@ import java.util.Map;
 import java.util.Set;
 
 import org.osgi.service.indexer.IndexWriter;
+import org.osgi.service.indexer.IndexWriterFactory;
 import org.osgi.service.indexer.ResourceIndexer;
-import org.osgi.service.indexer.impl.DefaultFragmentWriter;
 
 public class Utils {
-	
+
 	public static final String readStream(InputStream stream) throws IOException {
 		InputStreamReader reader = new InputStreamReader(stream);
 		StringBuilder result = new StringBuilder();
-		
+
 		char[] buf = new char[1024];
 		int charsRead = reader.read(buf, 0, buf.length);
 		while (charsRead > -1) {
 			result.append(buf, 0, charsRead);
 			charsRead = reader.read(buf, 0, buf.length);
 		}
-		
+
 		return result.toString();
 	}
-	
+
 	public static final void copyFully(InputStream input, OutputStream output) throws IOException {
 		try {
 			byte[] buf = new byte[1024];
@@ -40,11 +40,17 @@ public class Utils {
 				output.write(buf, 0, bytesRead);
 			}
 		} finally {
-			try { input.close(); } catch (IOException e) { /* ignore */ }
-			try { output.close(); } catch (IOException e) { /* ignore */ }
+			try {
+				input.close();
+			} catch (IOException e) { /* ignore */
+			}
+			try {
+				output.close();
+			} catch (IOException e) { /* ignore */
+			}
 		}
 	}
-	
+
 	public static File createTempDir() throws IOException {
 		File tempDir = File.createTempFile("bindex_testing", ".dir");
 		tempDir.delete();
@@ -52,7 +58,7 @@ public class Utils {
 			throw new IOException("Failed to create temporary directory");
 		return tempDir;
 	}
-	
+
 	/**
 	 * Deletes the specified file. Folders are recursively deleted.<br>
 	 * If file(s) cannot be deleted, no feedback is provided (fail silently).
@@ -67,7 +73,7 @@ public class Utils {
 			// Ignore a failed delete
 		}
 	}
-	
+
 	/**
 	 * Deletes the specified file. Folders are recursively deleted.<br>
 	 * Throws exception if any of the files could not be deleted.
@@ -79,7 +85,8 @@ public class Utils {
 	 */
 	public static void deleteWithException(File f) throws IOException {
 		f = f.getAbsoluteFile();
-		if (!f.exists()) return;
+		if (!f.exists())
+			return;
 		if (f.getParentFile() == null)
 			throw new IllegalArgumentException("Cannot recursively delete root for safety reasons");
 
@@ -100,20 +107,20 @@ public class Utils {
 			throw new IOException("Failed to delete " + f.getAbsoluteFile());
 		}
 	}
-	
+
 	public static File copyToTempFile(File tempDir, String resourcePath) throws IOException {
 		File tempFile = new File(tempDir, resourcePath);
-		
+
 		tempFile.deleteOnExit();
 		tempFile.getParentFile().mkdirs();
-		
+
 		Utils.copyFully(Utils.class.getResourceAsStream("/" + resourcePath), new FileOutputStream(tempFile));
 		return tempFile;
 	}
-	
-	public static String writeFragment(ResourceIndexer indexer, Set<File> files, Map<String, String> config) throws Exception {
+
+	public static String writeFragment(ResourceIndexer indexer, IndexWriterFactory iwf, Set<File> files, Map<String, String> config) throws Exception {
 		StringWriter sw = new StringWriter();
-		IndexWriter iw = new DefaultFragmentWriter(sw);
+		IndexWriter iw = iwf.newFragmentIndexWriter(sw);
 		indexer.index(files, iw, config);
 		iw.close();
 		return sw.toString().trim();
