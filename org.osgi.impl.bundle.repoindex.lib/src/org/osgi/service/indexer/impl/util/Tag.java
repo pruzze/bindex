@@ -205,8 +205,8 @@ public class Tag {
 		
 		printOpen(indent, pw, empty);
 		if (!empty) {
-			printContents(indent, pw);
-			printClose(indent, pw);
+			boolean compact = printContents(indent, pw);
+			printClose(compact ? Indent.NONE : indent, pw);
 		}
 	}
 	
@@ -235,16 +235,21 @@ public class Tag {
 			pw.print('>');
 	}
 	
-	public void printContents(Indent indent, PrintWriter pw) {
+	/**
+	 * @return {@code true} if the container tag should be compact (no newline and indent before closing tag).
+	 */
+	public boolean printContents(Indent indent, PrintWriter pw) {
+		boolean compact = false;
 		for (Object content : this.content) {
 			Indent nextIndent = indent.next();
 			if (content instanceof String) {
-				formatted(pw, nextIndent, 60, escape((String) content));
+				compact = formatted(pw, nextIndent, 60, escape((String) content), this.content.size() > 1);
 			} else if (content instanceof Tag) {
 				Tag tag = (Tag) content;
 				tag.print(nextIndent, pw);
 			}
 		}
+		return compact;
 	}
 	
 	public void printClose(Indent indent, PrintWriter pw) {
@@ -257,14 +262,17 @@ public class Tag {
 	/**
 	 * Convenience method to print a string nicely and does character conversion
 	 * to entities.
+	 * 
+	 * @return {@code true} if the container tag should be compact (no newline and indent before closing tag).
 	 */
-	void formatted(PrintWriter pw, Indent indent, int width, String s) {
+	boolean formatted(PrintWriter pw, Indent indent, int width, String s, boolean forceWrap) {
 		int pos = width + 1;
 		s = s.trim();
+		boolean wrap = forceWrap || s.length() > width || s.indexOf('\n') > 0;
 
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if (i == 0 || (Character.isWhitespace(c) && pos > width - 3)) {
+			if (wrap && i == 0 || (Character.isWhitespace(c) && pos > width - 3)) {
 				indent.print(pw);
 				pos = 0;
 			}
@@ -288,6 +296,7 @@ public class Tag {
 			}
 
 		}
+		return !wrap;
 	}
 
 	/**
