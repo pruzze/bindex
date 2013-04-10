@@ -41,7 +41,7 @@ class Type {
 		return result;
 	}
 
-	private Type(ScalarType type, boolean list) {
+	Type(ScalarType type, boolean list) {
 		this.type = type;
 		this.list = list;
 	}
