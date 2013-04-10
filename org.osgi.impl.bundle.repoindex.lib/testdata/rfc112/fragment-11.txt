@@ -1,0 +1,8 @@
+<resource id='org.example.k/0.0.0' symbolicname='org.example.k' uri='testdata/11-importservice.jar' version='0.0.0'>
+  <size>1118</size>
+  <capability name='bundle'>
+    <p n='symbolicname' v='org.example.k'/>
+    <p n='version' t='version' v='0.0.0'/>
+  </capability>
+  <require extend='false' filter='(objectClass=org.example.a.A)' multiple='false' name='service' optional='false'/>
+</resource>

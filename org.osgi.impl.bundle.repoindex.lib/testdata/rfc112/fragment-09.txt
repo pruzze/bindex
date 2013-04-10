@@ -1,0 +1,8 @@
+<resource id='org.example.i/0.0.0' symbolicname='org.example.i' uri='testdata/09-singleton.jar' version='0.0.0'>
+  <size>1111</size>
+  <capability name='bundle'>
+    <p n='symbolicname' v='org.example.i'/>
+    <p n='version' t='version' v='0.0.0'/>
+    <p n='singleton:' v='true'/>
+  </capability>
+</resource>

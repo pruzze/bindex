@@ -1,0 +1,16 @@
+<resource id='org.example.d/0.0.0' symbolicname='org.example.d' uri='testdata/04-export+uses.jar' version='0.0.0'>
+  <size>1494</size>
+  <capability name='bundle'>
+    <p n='symbolicname' v='org.example.d'/>
+    <p n='version' t='version' v='0.0.0'/>
+  </capability>
+  <capability name='package'>
+    <p n='package' v='org.example.b'/>
+    <p n='version' t='version' v='0.0.0'/>
+    <p n='uses:' v='org.example.a'/>
+  </capability>
+  <capability name='package'>
+    <p n='package' v='org.example.a'/>
+    <p n='version' t='version' v='1.0.0'/>
+  </capability>
+</resource>

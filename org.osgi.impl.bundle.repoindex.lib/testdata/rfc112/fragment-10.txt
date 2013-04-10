@@ -1,0 +1,10 @@
+<resource id='org.example.j/0.0.0' symbolicname='org.example.j' uri='testdata/10-exportservice.jar' version='0.0.0'>
+  <size>1119</size>
+  <capability name='bundle'>
+    <p n='symbolicname' v='org.example.j'/>
+    <p n='version' t='version' v='0.0.0'/>
+  </capability>
+  <capability name='service'>
+    <p n='service' v='org.example.a.A'/>
+  </capability>
+</resource>

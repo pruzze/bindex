@@ -1,0 +1,7 @@
+<resource id='org.example.n/0.0.0' symbolicname='org.example.n' uri='testdata/14-provide-require-cap.jar' version='0.0.0'>
+  <size>1181</size>
+  <capability name='bundle'>
+    <p n='symbolicname' v='org.example.n'/>
+    <p n='version' t='version' v='0.0.0'/>
+  </capability>
+</resource>
