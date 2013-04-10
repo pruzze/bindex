@@ -35,19 +35,19 @@ public class DefaultIndexWriter implements IndexWriter {
 		}
 
 		pw.print(Schema.XML_PROCESSING_INSTRUCTION);
-		Tag repoTag = new Tag(Schema.ELEM_REPOSITORY);
+		Tag repoTag = new Tag(Schema.R5.ELEM_REPOSITORY);
 
 		String repoName = config.get(REPOSITORY_NAME);
 		if (repoName == null)
 			repoName = REPOSITORYNAME_DEFAULT;
-		repoTag.addAttribute(Schema.ATTR_NAME, repoName);
+		repoTag.addAttribute(Schema.R5.ATTR_REPOSITORY_NAME, repoName);
 
 		String increment = config.get(REPOSITORY_INCREMENT_OVERRIDE);
 		if (increment == null)
 			increment = Long.toString(System.currentTimeMillis());
-		repoTag.addAttribute(Schema.ATTR_INCREMENT, increment);
+		repoTag.addAttribute(Schema.R5.ATTR_REPOSITORY_INCREMENT, increment);
 
-		repoTag.addAttribute(Schema.ATTR_XML_NAMESPACE, Schema.NAMESPACE);
+		repoTag.addAttribute(Schema.ATTR_XML_NAMESPACE, Schema.R5.NAMESPACE);
 
 		repoTag.printOpen(indent, pw, false);
 	}
@@ -58,7 +58,7 @@ public class DefaultIndexWriter implements IndexWriter {
 
 
 	public void close() throws IOException {
-		Tag repoTag = new Tag(Schema.ELEM_REPOSITORY);
+		Tag repoTag = new Tag(Schema.R5.ELEM_REPOSITORY);
 		repoTag.printClose(indent, pw);
 
 		pw.flush();

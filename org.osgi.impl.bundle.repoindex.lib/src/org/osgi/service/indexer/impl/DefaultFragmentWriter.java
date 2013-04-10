@@ -50,10 +50,10 @@ public class DefaultFragmentWriter implements IndexWriter {
 
 	static void write(Resource resource, Indent indent, PrintWriter pw) throws IOException {
 
-		Tag resourceTag = new Tag(Schema.ELEM_RESOURCE);
+		Tag resourceTag = new Tag(Schema.R5.ELEM_RESOURCE);
 		for (Capability cap : resource.getCapabilities(null)) {
-			Tag capTag = new Tag(Schema.ELEM_CAPABILITY);
-			capTag.addAttribute(Schema.ATTR_NAMESPACE, cap.getNamespace());
+			Tag capTag = new Tag(Schema.R5.ELEM_CAPABILITY);
+			capTag.addAttribute(Schema.R5.ATTR_NAMESPACE, cap.getNamespace());
 
 			appendAttributeAndDirectiveTags(capTag, cap.getAttributes(), cap.getDirectives());
 
@@ -61,8 +61,8 @@ public class DefaultFragmentWriter implements IndexWriter {
 		}
 
 		for (Requirement req : resource.getRequirements(null)) {
-			Tag reqTag = new Tag(Schema.ELEM_REQUIREMENT);
-			reqTag.addAttribute(Schema.ATTR_NAMESPACE, req.getNamespace());
+			Tag reqTag = new Tag(Schema.R5.ELEM_REQUIREMENT);
+			reqTag.addAttribute(Schema.R5.ATTR_NAMESPACE, req.getNamespace());
 
 			appendAttributeAndDirectiveTags(reqTag, req.getAttributes(), req.getDirectives());
 
@@ -74,17 +74,17 @@ public class DefaultFragmentWriter implements IndexWriter {
 
 	private static void appendAttributeAndDirectiveTags(Tag parentTag, Map<String, Object> attribs, Map<String, String> directives) {
 		for (Entry<String, Object> attribEntry : attribs.entrySet()) {
-			Tag attribTag = new Tag(Schema.ELEM_ATTRIBUTE);
-			attribTag.addAttribute(Schema.ATTR_NAME, attribEntry.getKey());
+			Tag attribTag = new Tag(Schema.R5.ELEM_ATTRIBUTE);
+			attribTag.addAttribute(Schema.R5.ATTR_ATTRIBUTE_NAME, attribEntry.getKey());
 
 			TypedAttribute typedAttrib = TypedAttribute.create(attribEntry.getKey(), attribEntry.getValue());
 			parentTag.addContent(typedAttrib.toXML());
 		}
 
 		for (Entry<String, String> directiveEntry : directives.entrySet()) {
-			Tag directiveTag = new Tag(Schema.ELEM_DIRECTIVE);
-			directiveTag.addAttribute(Schema.ATTR_NAME, directiveEntry.getKey());
-			directiveTag.addAttribute(Schema.ATTR_VALUE, directiveEntry.getValue());
+			Tag directiveTag = new Tag(Schema.R5.ELEM_DIRECTIVE);
+			directiveTag.addAttribute(Schema.R5.ATTR_ATTRIBUTE_NAME, directiveEntry.getKey());
+			directiveTag.addAttribute(Schema.R5.ATTR_ATTRIBUTE_VALUE, directiveEntry.getValue());
 			parentTag.addContent(directiveTag);
 		}
 	}

@@ -20,14 +20,14 @@ public class TypedAttribute {
 	}
 
 	public Tag toXML() {
-		Tag tag = new Tag(Schema.ELEM_ATTRIBUTE);
-		tag.addAttribute(Schema.ATTR_NAME, name);
+		Tag tag = new Tag(Schema.R5.ELEM_ATTRIBUTE);
+		tag.addAttribute(Schema.R5.ATTR_ATTRIBUTE_NAME, name);
 
 		if (type.isList() || type.getType() != ScalarType.String) {
-			tag.addAttribute(Schema.ATTR_TYPE, type.toString());
+			tag.addAttribute(Schema.R5.ATTR_ATTRIBUTE_TYPE, type.toString());
 		}
 
-		tag.addAttribute(Schema.ATTR_VALUE, type.convertToString(value));
+		tag.addAttribute(Schema.R5.ATTR_ATTRIBUTE_VALUE, type.convertToString(value));
 
 		return tag;
 	}
