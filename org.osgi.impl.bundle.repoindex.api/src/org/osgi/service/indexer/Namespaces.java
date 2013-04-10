@@ -23,6 +23,15 @@ public final class Namespaces {
 	
 	// Identity attributes
 	public static final String ATTR_IDENTITY_TYPE = "type";
+	public static final String ATTR_IDENTITY_COPYRIGHT = "copyright";
+	public static final String ATTR_IDENTITY_DESCRIPTION = "description";
+	public static final String ATTR_IDENTITY_DOCUMENTATION = "documentation";
+	public static final String ATTR_IDENTITY_LICENSE = "license";
+	public static final String ATTR_IDENTITY_CLASSIFIER = "classifier";
+	// attributes added to Identity namespace for parity with RFC112
+	public static final String ATTR_IDENTITY_MANIFEST_VERSION = "manifestversion"; // Manifest-Version
+	public static final String ATTR_IDENTITY_NAME = "name"; // Bundle-Name
+	public static final String ATTR_IDENTITY_CATEGORY = "category"; // Bundle-Category
 	
 	// Resource types
 	public static final String RESOURCE_TYPE_BUNDLE = "osgi.bundle";
@@ -53,6 +62,10 @@ public final class Namespaces {
 	public static final String DIRECTIVE_RESOLUTION = "resolution";
 	
 	public static final String RESOLUTION_OPTIONAL = "optional";
+	
+	public static final String DIRECTIVE_CARDINALITY = "cardinality";
+	public static final String CARDINALITY_SINGLE = "single";
+	public static final String CARDINALITY_MULTIPLE = "multiple";
 
 	public static final String EFFECTIVE_RESOLVE = "resolve";
 	public static final String EFFECTIVE_ACTIVE = "active";
