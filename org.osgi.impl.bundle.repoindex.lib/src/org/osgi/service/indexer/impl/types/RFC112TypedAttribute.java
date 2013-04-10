@@ -31,12 +31,12 @@ public class RFC112TypedAttribute {
 			tag = new Tag(name);
 			tag.addContent(type.convertToString(value));
 		} else {
-			tag = new Tag("p");
-			tag.addAttribute("n", name);
+			tag = new Tag(Schema.RFC112.ELEM_ATTRIBUTE);
+			tag.addAttribute(Schema.RFC112.ATTR_ATTRIBUTE_NAME, name);
 			if (type.isList() || type.getType() != ScalarType.String) {
-				tag.addAttribute("t", type.toString());
+				tag.addAttribute(Schema.RFC112.ATTR_ATTRIBUTE_TYPE, type.toString());
 			}			
-			tag.addAttribute("v", type.convertToString(value));
+			tag.addAttribute(Schema.RFC112.ATTR_ATTRIBUTE_VALUE, type.convertToString(value));
 		}
 		return tag;
 	}
