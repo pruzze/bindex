@@ -237,8 +237,10 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			if (key.endsWith(":")) {
 				String directiveName = key.substring(0, key.length() - 1);
 				if (Constants.FRAGMENT_ATTACHMENT_DIRECTIVE.equalsIgnoreCase(directiveName)) {
-					if (Constants.FRAGMENT_ATTACHMENT_NEVER.equalsIgnoreCase(attribEntry.getValue()))
+					if (Constants.FRAGMENT_ATTACHMENT_NEVER.equalsIgnoreCase(attribEntry.getValue())) {
 						allowFragments = false;
+						bundleBuilder.addDirective(directiveName, attribEntry.getValue());
+					}
 				} else if (!Constants.SINGLETON_DIRECTIVE.equalsIgnoreCase(directiveName)) {
 					bundleBuilder.addDirective(directiveName, attribEntry.getValue());
 				}

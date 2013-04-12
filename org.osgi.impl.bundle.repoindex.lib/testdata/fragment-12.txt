@@ -13,5 +13,6 @@
   <capability namespace='osgi.wiring.bundle'>
     <attribute name='osgi.wiring.bundle' value='org.example.l'/>
     <attribute name='bundle-version' type='Version' value='0.0.0'/>
+    <directive name='fragment-attachment' value='never'/>
   </capability>
 </resource>

@@ -3,5 +3,6 @@
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.l'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='fragment-attachment' v='never'/>
   </capability>
 </resource>

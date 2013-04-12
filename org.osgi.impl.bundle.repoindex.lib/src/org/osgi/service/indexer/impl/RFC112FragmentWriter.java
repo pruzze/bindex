@@ -116,6 +116,9 @@ public class RFC112FragmentWriter implements IndexWriter {
 				maybeAppendCapReqAttr(tag, identity.getAttributes(), Namespaces.ATTR_IDENTITY_NAME, Schema.RFC112.ATTR_BUNDLE_PRESENTATION_NAME);
 				maybeAppendCapReqAttr(tag, identity.getAttributes(), Namespaces.ATTR_VERSION, Schema.RFC112.ATTR_BUNDLE_VERSION);
 				maybeAppendCapReqAttr(tag, identity.getAttributes(), Namespaces.ATTR_IDENTITY_MANIFEST_VERSION, Schema.RFC112.ATTR_BUNDLE_MANIFEST_VERSION);
+				for(Capability bundle : resource.getCapabilities(Namespaces.NS_WIRING_BUNDLE)) {
+					maybeAppendCapReqAttr(tag, bundle.getDirectives(), Constants.FRAGMENT_ATTACHMENT_DIRECTIVE, Constants.FRAGMENT_ATTACHMENT_DIRECTIVE);
+				}
 				appendCapDirectives(tag, identity);
 				parentTag.addContent(tag);
 			}
