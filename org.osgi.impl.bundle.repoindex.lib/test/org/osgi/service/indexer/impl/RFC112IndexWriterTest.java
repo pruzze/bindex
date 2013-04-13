@@ -103,6 +103,10 @@ public class RFC112IndexWriterTest extends TestCase {
 		assertFragmentMatch("testdata/rfc112/fragment-plainjar-versioned.txt", "testdata/jcip-annotations-2.5.6.wibble.jar");
 	}
 	
+	public void testFragmenExtendedIdentity() throws Exception {
+		assertFragmentMatch("testdata/rfc112/fragment-21.txt", "testdata/21-extinfo.jar");
+	}
+	
 	private static String writeFragment(RepoIndex indexer, Set<File> files, Map<String, String> config) throws Exception {
 		StringWriter sw = new StringWriter();
 		IndexWriter iw = new RFC112FragmentWriter(sw);

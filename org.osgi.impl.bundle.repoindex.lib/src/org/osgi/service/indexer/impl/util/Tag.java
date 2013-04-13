@@ -272,7 +272,7 @@ public class Tag {
 
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if (wrap && i == 0 || (Character.isWhitespace(c) && pos > width - 3)) {
+			if (wrap && (i == 0 || (Character.isWhitespace(c) && pos > width - 3))) {
 				indent.print(pw);
 				pos = 0;
 			}

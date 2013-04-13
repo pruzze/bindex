@@ -354,4 +354,8 @@ public class TestIndexer extends TestCase {
 	public void testFragmentPlainJarWithVersion() throws Exception {
 		assertFragmentMatch("testdata/fragment-plainjar-versioned.txt", "testdata/jcip-annotations-2.5.6.wibble.jar");
 	}
+	
+	public void testFragmenExtendedIdentity() throws Exception {
+		assertFragmentMatch("testdata/fragment-21.txt", "testdata/21-extinfo.jar");
+	}
 }

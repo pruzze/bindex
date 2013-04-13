@@ -1,0 +1,28 @@
+<resource>
+  <capability namespace='osgi.identity'>
+    <attribute name='osgi.identity' value='org.example.q'/>
+    <attribute name='type' value='osgi.bundle'/>
+    <attribute name='version' type='Version' value='0.0.0'/>
+    <attribute name='category' value='testing'/>
+    <attribute name='copyright' value='a copyright notice'/>
+    <attribute name='description' value='This bundle servers as a test case for extended identity attributes'/>
+    <attribute name='documentation' value='https://github.com/osgi/bindex/blob/master/README.md'/>
+    <attribute name='license' value='https://github.com/osgi/bindex/blob/master/LICENSE.txt'/>
+    <attribute name='name' value='org.example.q - extended identity info'/>
+    <attribute name='manifestversion' value='2'/>
+  </capability>
+  <capability namespace='osgi.content'>
+    <attribute name='osgi.content' value='a0fe2141c955f0716378416ba57b86fe03b1921e0356312b6ed6b8ba921c190e'/>
+    <attribute name='url' value='testdata/21-extinfo.jar'/>
+    <attribute name='size' type='Long' value='494'/>
+    <attribute name='mime' value='application/vnd.osgi.bundle'/>
+  </capability>
+  <capability namespace='osgi.wiring.bundle'>
+    <attribute name='osgi.wiring.bundle' value='org.example.q'/>
+    <attribute name='bundle-version' type='Version' value='0.0.0'/>
+  </capability>
+  <capability namespace='osgi.wiring.host'>
+    <attribute name='osgi.wiring.host' value='org.example.q'/>
+    <attribute name='bundle-version' type='Version' value='0.0.0'/>
+  </capability>
+</resource>

@@ -1,0 +1,16 @@
+<resource id='org.example.q/0.0.0' presentationname='org.example.q - extended identity info' symbolicname='org.example.q' uri='testdata/21-extinfo.jar' version='0.0.0'>
+  <category id='testing'/>
+  <copyright>a copyright notice</copyright>
+  <description>
+    This bundle servers as a test case for extended identity attributes
+  </description>
+  <documentation>https://github.com/osgi/bindex/blob/master/README.md</documentation>
+  <license>https://github.com/osgi/bindex/blob/master/LICENSE.txt</license>
+  <size>494</size>
+  <capability name='bundle'>
+    <p n='symbolicname' v='org.example.q'/>
+    <p n='presentationname' v='org.example.q - extended identity info'/>
+    <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
+  </capability>
+</resource>
