@@ -1,8 +1,10 @@
-<resource id='org.example.d/0.0.0' symbolicname='org.example.d' uri='testdata/04-export+uses.jar' version='0.0.0'>
+<resource id='org.example.d/0.0.0' presentationname='org.example.d' symbolicname='org.example.d' uri='testdata/04-export+uses.jar' version='0.0.0'>
   <size>1494</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.d'/>
+    <p n='presentationname' v='org.example.d'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
   </capability>
   <capability name='package'>
     <p n='package' v='org.example.b'/>

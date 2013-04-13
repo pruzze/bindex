@@ -1,8 +1,10 @@
-<resource id='org.example.g/0.0.0' symbolicname='org.example.g' uri='testdata/07-optionalimport.jar' version='0.0.0'>
+<resource id='org.example.g/0.0.0' presentationname='org.example.g' symbolicname='org.example.g' uri='testdata/07-optionalimport.jar' version='0.0.0'>
   <size>978</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.g'/>
+    <p n='presentationname' v='org.example.g'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
   </capability>
   <require extend='false' filter='(&amp;(package=org.example.a)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'/>
 </resource>

@@ -3,6 +3,8 @@
     <attribute name='osgi.identity' value='org.examples.blueprint1'/>
     <attribute name='type' value='osgi.bundle'/>
     <attribute name='version' type='Version' value='0.0.0'/>
+    <attribute name='name' value='org.examples.blueprint1'/>
+    <attribute name='manifestversion' value='2'/>
   </capability>
   <capability namespace='osgi.content'>
     <attribute name='osgi.content' value='6add4c0f742eec622aa5237f3ea9959998a48adc1cc5940470db14a5da3ab103'/>

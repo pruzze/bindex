@@ -1,8 +1,10 @@
-<resource id='org.example.l/0.0.0' symbolicname='org.example.l' uri='testdata/12-nofragments.jar' version='0.0.0'>
+<resource id='org.example.l/0.0.0' presentationname='org.example.l' symbolicname='org.example.l' uri='testdata/12-nofragments.jar' version='0.0.0'>
   <size>1119</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.l'/>
+    <p n='presentationname' v='org.example.l'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
     <p n='fragment-attachment' v='never'/>
   </capability>
 </resource>

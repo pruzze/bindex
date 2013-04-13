@@ -3,6 +3,11 @@
     <attribute name='osgi.identity' value='org.apache.aries.blueprint'/>
     <attribute name='type' value='osgi.bundle'/>
     <attribute name='version' type='Version' value='1.0.0'/>
+    <attribute name='description' value="This bundle contains the standalone implementation along with the API.        It's composed of the blueprint-api, blueprint-core and blueprint-cm modules."/>
+    <attribute name='documentation' value='http://www.apache.org'/>
+    <attribute name='license' value='http://www.apache.org/licenses/LICENSE-2.0.txt'/>
+    <attribute name='name' value='Apache Aries Blueprint Bundle'/>
+    <attribute name='manifestversion' value='2'/>
   </capability>
   <capability namespace='osgi.content'>
     <attribute name='osgi.content' value='22def9db2e6a1b4542c588e5b79433a557a7e8ee1066ca4d014164dde27a65e8'/>

@@ -3,6 +3,8 @@
     <attribute name='osgi.identity' value='org.example.g'/>
     <attribute name='type' value='osgi.bundle'/>
     <attribute name='version' type='Version' value='0.0.0'/>
+    <attribute name='name' value='org.example.g'/>
+    <attribute name='manifestversion' value='2'/>
   </capability>
   <capability namespace='osgi.content'>
     <attribute name='osgi.content' value='801e50621aba2e62138559b3e50742abf045bf70d7092b49defdd78cef219c36'/>

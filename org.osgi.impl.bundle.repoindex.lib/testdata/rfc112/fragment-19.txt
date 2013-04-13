@@ -1,7 +1,9 @@
-<resource id='org.example.nativecode/0.0.0' symbolicname='org.example.nativecode' uri='testdata/19-bundlenativecode.jar' version='0.0.0'>
+<resource id='org.example.nativecode/0.0.0' presentationname='org.example.nativecode' symbolicname='org.example.nativecode' uri='testdata/19-bundlenativecode.jar' version='0.0.0'>
   <size>460</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.nativecode'/>
+    <p n='presentationname' v='org.example.nativecode'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
   </capability>
 </resource>

@@ -1,8 +1,10 @@
-<resource id='org.example.m/0.0.0' symbolicname='org.example.m' uri='testdata/13-bree.jar' version='0.0.0'>
+<resource id='org.example.m/0.0.0' presentationname='org.example.m' symbolicname='org.example.m' uri='testdata/13-bree.jar' version='0.0.0'>
   <size>1144</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.m'/>
+    <p n='presentationname' v='org.example.m'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
   </capability>
   <require extend='false' filter='(|(ee=JavaSE-1.4)(ee=OSGi/Minimum-1.1))' multiple='false' name='ee' optional='false'/>
 </resource>

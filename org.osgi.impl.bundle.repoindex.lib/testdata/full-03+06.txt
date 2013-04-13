@@ -5,6 +5,8 @@
       <attribute name='osgi.identity' value='org.example.c'/>
       <attribute name='type' value='osgi.bundle'/>
       <attribute name='version' type='Version' value='0.0.0'/>
+      <attribute name='name' value='org.example.c'/>
+      <attribute name='manifestversion' value='2'/>
     </capability>
     <capability namespace='osgi.content'>
       <attribute name='osgi.content' value='805edded7fe1d6cd060347818257270277dfaa2a99bf747065da61639a89984e'/>
@@ -32,6 +34,8 @@
       <attribute name='osgi.identity' value='org.example.f'/>
       <attribute name='type' value='osgi.bundle'/>
       <attribute name='version' type='Version' value='0.0.0'/>
+      <attribute name='name' value='org.example.f'/>
+      <attribute name='manifestversion' value='2'/>
     </capability>
     <capability namespace='osgi.content'>
       <attribute name='osgi.content' value='bc9acc2341bbebedff6213c6f581e6e9f4c03963f64e73f42c831c94a4251a01'/>

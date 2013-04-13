@@ -39,6 +39,8 @@ class BundleAnalyzer implements ResourceAnalyzer {
 	// Duplicate these constants here to avoid a compile-time dependency on OSGi R4.3
 	private static final String PROVIDE_CAPABILITY = "Provide-Capability";
 	private static final String REQUIRE_CAPABILITY = "Require-Capability";
+	// See OSGi Core 3.2.1.10
+	private static final String BUNDLE_LICENSE = "Bundle-License";
 
 	// Filename suffix for JAR files
 	private static final String SUFFIX_JAR = ".jar";
@@ -103,7 +105,26 @@ class BundleAnalyzer implements ResourceAnalyzer {
 				.addAttribute(Namespaces.ATTR_VERSION, version);
 		if (singleton)
 			builder.addDirective(Namespaces.DIRECTIVE_SINGLETON, Boolean.TRUE.toString());
+		doExtendedIdentityAttrs(resource, builder);
 		caps.add(builder.buildCapability());
+	}
+	
+	private void doExtendedIdentityAttrs(IndexableResource resource, Builder builder) throws Exception {
+		Attributes manifestAttrs  = resource.getManifest().getMainAttributes();
+		if(manifestAttrs.getValue(Constants.BUNDLE_CATEGORY) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_CATEGORY, manifestAttrs.getValue(Constants.BUNDLE_CATEGORY));
+		if(manifestAttrs.getValue(Constants.BUNDLE_COPYRIGHT) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_COPYRIGHT, manifestAttrs.getValue(Constants.BUNDLE_COPYRIGHT));
+		if(manifestAttrs.getValue(Constants.BUNDLE_DESCRIPTION) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_DESCRIPTION, manifestAttrs.getValue(Constants.BUNDLE_DESCRIPTION));
+		if(manifestAttrs.getValue(Constants.BUNDLE_DOCURL) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_DOCUMENTATION, manifestAttrs.getValue(Constants.BUNDLE_DOCURL));
+		if(manifestAttrs.getValue(BUNDLE_LICENSE) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_LICENSE, manifestAttrs.getValue(BUNDLE_LICENSE));
+		if(manifestAttrs.getValue(Constants.BUNDLE_NAME) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_NAME, manifestAttrs.getValue(Constants.BUNDLE_NAME));
+		if(manifestAttrs.getValue(Constants.BUNDLE_MANIFESTVERSION) != null)
+			builder.addAttribute(Namespaces.ATTR_IDENTITY_MANIFESTVERSION, manifestAttrs.getValue(Constants.BUNDLE_MANIFESTVERSION));		
 	}
 	
 	private void doPlainJarIdentity(IndexableResource resource, List<? super Capability> caps) {

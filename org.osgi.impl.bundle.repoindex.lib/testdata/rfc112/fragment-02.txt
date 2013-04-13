@@ -1,7 +1,9 @@
-<resource id='org.example.b/0.0.0' symbolicname='org.example.b' uri='testdata/02-localization.jar' version='0.0.0'>
+<resource id='org.example.b/0.0.0' presentationname='%bundle_b' symbolicname='org.example.b' uri='testdata/02-localization.jar' version='0.0.0'>
   <size>1544</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.b'/>
+    <p n='presentationname' v='%bundle_b'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
   </capability>
 </resource>

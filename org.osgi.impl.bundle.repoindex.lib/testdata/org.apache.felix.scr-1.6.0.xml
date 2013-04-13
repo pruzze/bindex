@@ -3,6 +3,11 @@
     <attribute name='osgi.identity' value='org.apache.felix.scr'/>
     <attribute name='type' value='osgi.bundle'/>
     <attribute name='version' type='Version' value='1.6.0'/>
+    <attribute name='description' value='Implementation of the Declarative Services specification 1.1'/>
+    <attribute name='documentation' value='http://felix.apache.org/site/apache-felix-service-component-runtime.html'/>
+    <attribute name='license' value='http://www.apache.org/licenses/LICENSE-2.0.txt'/>
+    <attribute name='name' value='Apache Felix Declarative Services'/>
+    <attribute name='manifestversion' value='2'/>
   </capability>
   <capability namespace='osgi.content'>
     <attribute name='osgi.content' value='a1491c209969495b4f5f1f7f9387194f2d5109b0e768e9788ae98cf82b335c11'/>

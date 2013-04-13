@@ -3,6 +3,11 @@
     <attribute name='osgi.identity' value='org.eclipse.gemini.blueprint.extender'/>
     <attribute name='type' value='osgi.bundle'/>
     <attribute name='version' type='Version' value='1.0.0.RELEASE'/>
+    <attribute name='description' value='Eclipse Gemini Blueprint extender. Listens for and bootstraps OSGi 4.2 Blueprint and Spring-powered OSGi bundles.'/>
+    <attribute name='documentation' value='http://www.eclipse.org/gemini/blueprint/'/>
+    <attribute name='license' value='http://www.opensource.org/licenses/eclipse-1.0.php, http://www.opensource.org/licenses/apache2.0.php'/>
+    <attribute name='name' value='gemini-blueprint-extender'/>
+    <attribute name='manifestversion' value='2'/>
   </capability>
   <capability namespace='osgi.content'>
     <attribute name='osgi.content' value='f0bdd4d1d28c5de7432e0f914b0b3c58f094f0111837efdc8d355744f33bd172'/>

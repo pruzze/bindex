@@ -3,6 +3,11 @@
     <attribute name='osgi.identity' value='org.apache.felix.http.jetty'/>
     <attribute name='type' value='osgi.bundle'/>
     <attribute name='version' type='Version' value='2.2.0'/>
+    <attribute name='description' value='Apache Felix is an OSGi implementation.'/>
+    <attribute name='documentation' value='http://www.apache.org/'/>
+    <attribute name='license' value='http://www.apache.org/licenses/LICENSE-2.0.txt'/>
+    <attribute name='name' value='Apache Felix Http Jetty'/>
+    <attribute name='manifestversion' value='2'/>
   </capability>
   <capability namespace='osgi.content'>
     <attribute name='osgi.content' value='e4d019c20015b7b36ff6480730255dfbd6c9091615a99353ee4c1cc815ab2cf3'/>

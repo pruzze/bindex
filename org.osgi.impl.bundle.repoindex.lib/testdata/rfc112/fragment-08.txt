@@ -1,8 +1,10 @@
-<resource id='org.example.h/0.0.0' symbolicname='org.example.h' uri='testdata/08-fragmenthost.jar' version='0.0.0'>
+<resource id='org.example.h/0.0.0' presentationname='org.example.h' symbolicname='org.example.h' uri='testdata/08-fragmenthost.jar' version='0.0.0'>
   <size>1117</size>
   <capability name='bundle'>
     <p n='symbolicname' v='org.example.h'/>
+    <p n='presentationname' v='org.example.h'/>
     <p n='version' t='version' v='0.0.0'/>
+    <p n='manifestversion' v='2'/>
   </capability>
   <capability name='fragment'>
     <p n='host' v='org.example.a'/>
