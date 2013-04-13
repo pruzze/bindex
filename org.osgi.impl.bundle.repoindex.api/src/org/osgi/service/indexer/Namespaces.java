@@ -29,7 +29,7 @@ public final class Namespaces {
 	public static final String ATTR_IDENTITY_LICENSE = "license";
 	public static final String ATTR_IDENTITY_CLASSIFIER = "classifier";
 	// attributes added to Identity namespace for parity with RFC112
-	public static final String ATTR_IDENTITY_MANIFEST_VERSION = "manifestversion"; // Manifest-Version
+	public static final String ATTR_IDENTITY_MANIFESTVERSION = "manifestversion"; // Manifest-Version
 	public static final String ATTR_IDENTITY_NAME = "name"; // Bundle-Name
 	public static final String ATTR_IDENTITY_CATEGORY = "category"; // Bundle-Category
 	
