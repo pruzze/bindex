@@ -1,17 +1,17 @@
 package pl.caltha.labs.ldapfilters;
 
-public class Or extends CompoundFilter {
+public class AndFilter extends CompoundFilter {
 
-	Or() {
+	AndFilter() {
 		super();
 	}
 
-	Or(Filter... initTerms) {
+	AndFilter(Filter... initTerms) {
 		super(initTerms);
 	}
 
 	public <V> V accept(FilterVisitor<V> visitor, V data) {
-		for(Filter term : getTerms()) {
+		for (Filter term : getTerms()) {
 			data = term.accept(visitor, data);
 		}
 		return visitor.visit(this, data);
@@ -19,7 +19,6 @@ public class Or extends CompoundFilter {
 
 	@Override
 	public String toString() {
-		return toString('|');
+		return toString('&');
 	}
-		
 }

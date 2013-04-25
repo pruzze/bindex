@@ -40,10 +40,10 @@ public class RequirementFilter extends SimpleFilter<Filter> {
 		buff.append("(").append(getAttribute());
 		buff.append(";filter:=");
 		buff.append(getValue().toString());
-		for(Map.Entry<String,String> entry : properties.entrySet()) {
+		for (Map.Entry<String, String> entry : properties.entrySet()) {
 			buff.append(';').append(entry.getKey());
 			buff.append(":=").append(entry.getValue());
-		}		
+		}
 		buff.append(")");
 		return buff.toString();
 	}

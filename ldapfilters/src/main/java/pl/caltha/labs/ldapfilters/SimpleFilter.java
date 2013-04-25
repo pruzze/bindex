@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class SimpleFilter<T> implements Filter {
-	
+
 	private static Pattern ATTR = Pattern.compile("([^:]+):(.*)");
 
 	private static Pattern LIST = Pattern.compile("List<([^>]+)>");
@@ -79,14 +79,14 @@ public abstract class SimpleFilter<T> implements Filter {
 			}
 		}
 	}
-	
+
 	protected void appendType(StringBuilder buff) {
 	}
-	
+
 	protected void appendValue(StringBuilder buff) {
 		buff.append(getValue().toString());
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder buff = new StringBuilder();
@@ -111,7 +111,7 @@ public abstract class SimpleFilter<T> implements Filter {
 			buff.append(">=");
 			break;
 		}
-		if(operator != Operator.PRESENT) {
+		if (operator != Operator.PRESENT) {
 			appendValue(buff);
 		}
 		buff.append(')');

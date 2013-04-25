@@ -45,11 +45,11 @@ public class VisitorTest {
 				.thenAnswer(lp1.answer());
 		when(visitor.visit(isA(ListFilter.class), argThat(lp1.matcher())))
 				.thenAnswer(lp1.answer());
-		when(visitor.visit(isA(Not.class), argThat(lp1.matcher()))).thenAnswer(
+		when(visitor.visit(isA(NotFilter.class), argThat(lp1.matcher()))).thenAnswer(
 				lp1.answer());
-		when(visitor.visit(isA(Or.class), argThat(lp1.matcher()))).thenAnswer(
+		when(visitor.visit(isA(OrFilter.class), argThat(lp1.matcher()))).thenAnswer(
 				lp1.answer());
-		when(visitor.visit(isA(And.class), argThat(lp1.matcher()))).thenAnswer(
+		when(visitor.visit(isA(AndFilter.class), argThat(lp1.matcher()))).thenAnswer(
 				lp1.answer());
 		when(
 				visitor.visit(isA(RequirementFilter.class),
@@ -101,7 +101,7 @@ public class VisitorTest {
 		f.accept(visitor, 0);
 		InOrder inOrder = inOrder(visitor);
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
-		inOrder.verify(visitor).visit(isA(Not.class), eq(1));
+		inOrder.verify(visitor).visit(isA(NotFilter.class), eq(1));
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public class VisitorTest {
 		InOrder inOrder = inOrder(visitor);
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
 		inOrder.verify(visitor).visit(isA(LongFilter.class), eq(1));
-		inOrder.verify(visitor).visit(isA(And.class), eq(2));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class VisitorTest {
 		InOrder inOrder = inOrder(visitor);
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
 		inOrder.verify(visitor).visit(isA(LongFilter.class), eq(1));
-		inOrder.verify(visitor).visit(isA(Or.class), eq(2));
+		inOrder.verify(visitor).visit(isA(OrFilter.class), eq(2));
 	}
 
 	@Test
@@ -136,7 +136,7 @@ public class VisitorTest {
 		InOrder inOrder = inOrder(visitor);
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
 		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
-		inOrder.verify(visitor).visit(isA(And.class), eq(2));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
 		inOrder.verify(visitor).visit(isA(RequirementFilter.class), eq(3));
 	}
 	
@@ -160,11 +160,11 @@ public class VisitorTest {
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
 		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
 		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(2));
-		inOrder.verify(visitor).visit(isA(And.class), eq(3));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(3));
 		inOrder.verify(visitor).visit(isA(RequirementFilter.class), eq(4));
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(5));
 		inOrder.verify(visitor).visit(isA(RequirementFilter.class), eq(6));
-		inOrder.verify(visitor).visit(isA(And.class), eq(7));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(7));
 	}
 
 	private static class LastPlusOne {

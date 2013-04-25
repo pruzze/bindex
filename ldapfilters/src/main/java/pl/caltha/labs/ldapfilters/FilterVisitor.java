@@ -2,15 +2,15 @@ package pl.caltha.labs.ldapfilters;
 
 public class FilterVisitor<T> {
 
-	public T visit(And f, T data) {
+	public T visit(AndFilter f, T data) {
 		return data;
 	}
 
-	public T visit(Or f, T data) {
+	public T visit(OrFilter f, T data) {
 		return data;
 	}
 
-	public T visit(Not f, T data) {
+	public T visit(NotFilter f, T data) {
 		return data;
 	}
 

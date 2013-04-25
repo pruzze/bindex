@@ -1,12 +1,12 @@
 package pl.caltha.labs.ldapfilters;
 
-public class Not extends CompoundFilter {
+public class NotFilter extends CompoundFilter {
 
-	Not() {
+	NotFilter() {
 		super();
 	}
 
-	Not(Filter term) {
+	NotFilter(Filter term) {
 		super(term);
 	}
 
@@ -17,9 +17,9 @@ public class Not extends CompoundFilter {
 		else
 			throw new IllegalStateException("already contains a term");
 	}
-		
+
 	public <V> V accept(FilterVisitor<V> visitor, V data) {
-		for(Filter term : getTerms()) {
+		for (Filter term : getTerms()) {
 			data = term.accept(visitor, data);
 		}
 		return visitor.visit(this, data);
