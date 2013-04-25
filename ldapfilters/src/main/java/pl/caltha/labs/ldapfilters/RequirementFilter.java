@@ -22,6 +22,12 @@ public class RequirementFilter extends SimpleFilter<Filter> {
 	public AttributeType getAttributeType() {
 		return AttributeType.REQUIREMENT;
 	}
+	
+	public <T> T accept(FilterVisitor<T> visitor, T data) {
+		data = getValue().accept(visitor, data);
+		data = visitor.visit(this, data);
+		return data;
+	}
 
 	@Override
 	public String toString() {

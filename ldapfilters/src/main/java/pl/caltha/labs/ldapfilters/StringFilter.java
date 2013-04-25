@@ -10,6 +10,10 @@ public class StringFilter extends SimpleFilter<String> {
 	public AttributeType getAttributeType() {		
 		return AttributeType.STRING;
 	}
+		
+	public <V> V accept(FilterVisitor<V> visitor, V data) {
+		return visitor.visit(this, data);
+	}
 	
 	protected void appendValue(StringBuilder buff) {
 		buff.append(getValue().replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)"));

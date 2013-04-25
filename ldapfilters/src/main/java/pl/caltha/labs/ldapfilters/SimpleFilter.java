@@ -3,7 +3,6 @@ package pl.caltha.labs.ldapfilters;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public abstract class SimpleFilter<T> implements Filter {
 	
 	private static Pattern ATTR = Pattern.compile("([^:]+):(.*)");

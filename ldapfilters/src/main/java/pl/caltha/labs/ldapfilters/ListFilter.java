@@ -25,7 +25,7 @@ public class ListFilter extends SimpleFilter<List<?>> {
 	<T> ListFilter(String attribute, Operator operator,
 			AttributeType elementType, List<T> values) {
 		super(attribute, operator, values);
-		if(elementType == AttributeType.LIST) {
+		if (elementType == AttributeType.LIST) {
 			throw new IllegalArgumentException("Unsupported element type "
 					+ elementType);
 		}
@@ -40,7 +40,8 @@ public class ListFilter extends SimpleFilter<List<?>> {
 		List<Object> result = new ArrayList<Object>(elems.length);
 		for (String elem : elems) {
 			result.add(parseElement(elementType,
-					elem.trim().replace("\\\\", "\\").replace("\\\"", "\"").replace("\\,", ",")));
+					elem.trim().replace("\\\\", "\\").replace("\\\"", "\"")
+							.replace("\\,", ",")));
 		}
 		return result;
 	}
@@ -68,6 +69,10 @@ public class ListFilter extends SimpleFilter<List<?>> {
 
 	public AttributeType getElementType() {
 		return elementType;
+	}
+
+	public <V> V accept(FilterVisitor<V> visitor, V data) {
+		return visitor.visit(this, data);
 	}
 
 	@Override

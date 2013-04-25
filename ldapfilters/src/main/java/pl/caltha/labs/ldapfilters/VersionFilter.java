@@ -17,6 +17,10 @@ public class VersionFilter extends SimpleFilter<Version> {
 		return AttributeType.VERSION;
 	}
 	
+	public <V> V accept(FilterVisitor<V> visitor, V data) {
+		return visitor.visit(this, data);
+	}
+	
 	protected void appendType(StringBuilder buff) {
 		buff.append(":Version");
 	}

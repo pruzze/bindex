@@ -13,6 +13,10 @@ public class LongFilter extends SimpleFilter<Long> {
 	public AttributeType getAttributeType() {
 		return AttributeType.LONG;
 	}
+	
+	public <V> V accept(FilterVisitor<V> visitor, V data) {
+		return visitor.visit(this, data);
+	}
 
 	protected void appendType(StringBuilder buff) {
 		buff.append(":Long");
