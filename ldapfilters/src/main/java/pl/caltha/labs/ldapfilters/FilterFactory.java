@@ -47,4 +47,12 @@ public class FilterFactory {
 			throw new IllegalArgumentException("value required for opreator " + operator);
 		return SimpleFilter.newFilter(attribute, operator, null);
 	}
+	
+	public static Filter requirement(String namespace, Filter filter) {
+		return new RequirementFilter(namespace, filter, false, false);
+	}
+
+	public static Filter requirement(String namespace, Filter filter, boolean optional, boolean multiple) {
+		return new RequirementFilter(namespace, filter, optional, multiple);
+	}
 }
