@@ -12,6 +12,6 @@ public class StringFilter extends SimpleFilter<String> {
 	}
 	
 	protected void appendValue(StringBuilder buff) {
-		buff.append(getValue().replace("//", "////").replace("(", "\\(").replace(")", "\\)"));
+		buff.append(getValue().replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)"));
 	}
 }
