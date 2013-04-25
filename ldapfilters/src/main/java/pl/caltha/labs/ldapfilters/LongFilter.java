@@ -15,6 +15,6 @@ public class LongFilter extends SimpleFilter<Long> {
 	}
 
 	protected void appendType(StringBuilder buff) {
-		buff.append("Long");
+		buff.append(":Long");
 	}
 }

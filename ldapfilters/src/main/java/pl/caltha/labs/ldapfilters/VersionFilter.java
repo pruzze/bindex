@@ -18,6 +18,6 @@ public class VersionFilter extends SimpleFilter<Version> {
 	}
 	
 	protected void appendType(StringBuilder buff) {
-		buff.append("Version");
+		buff.append(":Version");
 	}
 }

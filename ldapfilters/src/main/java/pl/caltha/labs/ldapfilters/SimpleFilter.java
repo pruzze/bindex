@@ -81,7 +81,8 @@ public abstract class SimpleFilter<T> implements Filter {
 		}
 	}
 	
-	protected abstract void appendType(StringBuilder buff);
+	protected void appendType(StringBuilder buff) {
+	}
 	
 	protected void appendValue(StringBuilder buff) {
 		buff.append(getValue().toString());
@@ -92,9 +93,7 @@ public abstract class SimpleFilter<T> implements Filter {
 		StringBuilder buff = new StringBuilder();
 		buff.append('(');
 		buff.append(attribute);
-		if(getAttributeType() != AttributeType.STRING) {
-			appendType(buff.append(':'));
-		}
+		appendType(buff);
 		switch (operator) {
 		case EQUAL:
 		case SUBSTRING:

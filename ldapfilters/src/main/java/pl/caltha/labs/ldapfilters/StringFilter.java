@@ -11,10 +11,6 @@ public class StringFilter extends SimpleFilter<String> {
 		return AttributeType.STRING;
 	}
 	
-	protected void appendType(StringBuilder buff) {
-		buff.append("String");
-	}
-	
 	protected void appendValue(StringBuilder buff) {
 		buff.append(getValue().replace("//", "////").replace("(", "\\(").replace(")", "\\)"));
 	}

@@ -72,7 +72,7 @@ public class ListFilter extends SimpleFilter<List<?>> {
 
 	@Override
 	protected void appendType(StringBuilder buff) {
-		buff.append("List<");
+		buff.append(":List<");
 		switch (elementType) {
 		case STRING:
 			buff.append("String");

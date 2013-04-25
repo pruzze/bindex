@@ -16,6 +16,6 @@ public class DoubleFilter extends SimpleFilter<Double> {
 	}
 	
 	protected void appendType(StringBuilder buff) {
-		buff.append("Double");
+		buff.append(":Double");
 	}
 }
