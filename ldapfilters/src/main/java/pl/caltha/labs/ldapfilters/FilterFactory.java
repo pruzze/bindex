@@ -1,7 +1,9 @@
 package pl.caltha.labs.ldapfilters;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.framework.Version;
 
@@ -49,10 +51,10 @@ public class FilterFactory {
 	}
 	
 	public static Filter requirement(String namespace, Filter filter) {
-		return new RequirementFilter(namespace, filter, false, false);
+		return new RequirementFilter(namespace, filter, Collections.<String, String>emptyMap());
 	}
 
-	public static Filter requirement(String namespace, Filter filter, boolean optional, boolean multiple) {
-		return new RequirementFilter(namespace, filter, optional, multiple);
+	public static Filter requirement(String namespace, Filter filter, Map<String, String> properties) {
+		return new RequirementFilter(namespace, filter, properties);
 	}
 }

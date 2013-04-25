@@ -13,6 +13,8 @@ import static pl.caltha.labs.ldapfilters.Operator.LESS_EQ;
 import static pl.caltha.labs.ldapfilters.Operator.PRESENT;
 import static pl.caltha.labs.ldapfilters.Operator.SUBSTRING;
 
+import java.util.Collections;
+
 import org.junit.Test;
 import org.osgi.framework.Version;
 
@@ -76,7 +78,7 @@ public class FilterFactoryTest {
 				"osgi.wiring.package",
 				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
 						filter("version", GREATER_EQ, new Version(1, 6, 0))),
-				true, false);
+				Collections.singletonMap("resolution", "optional"));
 		assertEquals(
 				"(osgi.wiring.package;filter:=(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0));resolution:=optional)",
 				filter.toString());
@@ -88,10 +90,27 @@ public class FilterFactoryTest {
 				"osgi.wiring.package",
 				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
 						filter("version", GREATER_EQ, new Version(1, 6, 0))),
-				false, true);
+				Collections.singletonMap("cardinality", "multiple"));
 		assertEquals(
 				"(osgi.wiring.package;filter:=(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0));cardinality:=multiple)",
 				filter.toString());
+	}
+
+	@Test
+	public void testDuplicatedFilter() {
+		try {
+			requirement(
+					"osgi.wiring.package",
+					and(filter("osgi.wiring.package", EQUAL,
+							"org.osgi.framework"),
+							filter("version", GREATER_EQ, new Version(1, 6, 0))),
+					Collections
+							.singletonMap("filter",
+									"(&(osgi.wiring.package=org.osgi.framework)(version>=1.6.0))"));
+			fail("should have thrown an exception");
+		} catch (IllegalArgumentException e) {
+			// OK
+		}
 	}
 
 	// RFC 187
