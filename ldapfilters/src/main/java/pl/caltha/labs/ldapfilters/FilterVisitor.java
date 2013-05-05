@@ -37,8 +37,12 @@ public class FilterVisitor<T> {
 	public T visit(ListFilter f, T data) {
 		return data;
 	}
+	
+	public T visit(NestedFilter f, T data) {
+		return data;
+	}
 
-	public T visit(RequirementFilter f, T data) {
+	public T visit(Requirement f, T data) {
 		return data;
 	}
 }

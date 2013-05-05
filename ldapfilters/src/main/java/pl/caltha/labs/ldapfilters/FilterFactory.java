@@ -57,13 +57,13 @@ public class FilterFactory {
 		return new VoidFilter(attribute, operator);
 	}
 
-	public static Filter requirement(String namespace, Filter filter) {
-		return new RequirementFilter(namespace, filter,
+	public static Requirement requirement(String namespace, Filter filter) {
+		return new Requirement(namespace, filter,
 				Collections.<String, String> emptyMap());
 	}
 
-	public static Filter requirement(String namespace, Filter filter,
+	public static Requirement requirement(String namespace, Filter filter,
 			Map<String, String> properties) {
-		return new RequirementFilter(namespace, filter, properties);
+		return new Requirement(namespace, filter, properties);
 	}
 }

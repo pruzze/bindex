@@ -9,13 +9,17 @@ import java.util.Map;
  * @author rafal
  * 
  */
-public class RequirementFilter extends SimpleFilter<Filter> {
+public class Requirement implements Filter {
 
+	private String namespace;
+	
 	private Map<String, String> properties;
 
-	RequirementFilter(String namespace, Filter value,
-			Map<String, String> properties) {
-		super(namespace, Operator.MATCHES, value);
+	private Filter filter;
+
+	Requirement(String namespace, Filter filter, Map<String, String> properties) {
+		this.namespace = namespace;
+		this.filter = filter;
 		this.properties = properties;
 		for (String key : properties.keySet()) {
 			if (key.equalsIgnoreCase("filter"))
@@ -24,27 +28,21 @@ public class RequirementFilter extends SimpleFilter<Filter> {
 	}
 
 	@Override
-	public AttributeType getAttributeType() {
-		return AttributeType.REQUIREMENT;
-	}
-
-	public <T> T accept(FilterVisitor<T> visitor, T data) {
-		data = getValue().accept(visitor, data);
-		data = visitor.visit(this, data);
-		return data;
-	}
-
-	@Override
 	public String toString() {
 		StringBuilder buff = new StringBuilder();
-		buff.append("(").append(getAttribute());
+		buff.append("(").append(namespace);
 		buff.append(";filter:=");
-		buff.append(getValue().toString());
+		buff.append(filter.toString());
 		for (Map.Entry<String, String> entry : properties.entrySet()) {
 			buff.append(';').append(entry.getKey());
 			buff.append(":=").append(entry.getValue());
 		}
 		buff.append(")");
 		return buff.toString();
+	}
+
+	public <T> T accept(FilterVisitor<T> visitor, T data) {
+		data = filter.accept(visitor, data);
+		return visitor.visit(this, data);
 	}
 }

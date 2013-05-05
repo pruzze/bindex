@@ -1,7 +1,7 @@
 package pl.caltha.labs.ldapfilters;
 
 public enum AttributeType {
-	STRING, LONG, DOUBLE, VERSION, LIST, REQUIREMENT;
+	STRING, LONG, DOUBLE, VERSION, LIST;
 
 	private static String[] repr = { "String", "Long", "Double", "Version",
 			"List" };
