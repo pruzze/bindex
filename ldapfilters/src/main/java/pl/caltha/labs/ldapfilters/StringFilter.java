@@ -2,7 +2,8 @@ package pl.caltha.labs.ldapfilters;
 
 public class StringFilter extends SimpleFilter<String> {
 	StringFilter(String attribute, Operator operator, String value) {
-		super(attribute, operator, value);
+		super(attribute, operator, value == null ? null : value
+				.replace("\\(", "(").replace("\\)", ")").replace("\\\\", "\\"));
 	}
 
 	@Override
