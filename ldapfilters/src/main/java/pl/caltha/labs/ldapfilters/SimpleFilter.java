@@ -48,7 +48,11 @@ public abstract class SimpleFilter<T> implements Filter {
 			attrType = "String";
 		}
 		if (attrType.equals("String")) {
-			return new StringFilter(attrName, operator, value);
+			if (operator == Operator.EQUAL
+					&& (value.startsWith("*") || value.endsWith("*")))
+				return new StringFilter(attrName, Operator.SUBSTRING, value);
+			else
+				return new StringFilter(attrName, operator, value);
 		} else if (attrType.equals("Double")) {
 			return new DoubleFilter(attrName, operator, value);
 		} else if (attrType.equals("Long")) {
