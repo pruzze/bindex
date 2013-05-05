@@ -139,6 +139,9 @@ public class LexerTest {
 		assertEquals(">=", l.yytext());
 		assertEquals(FilterParser.YYVALUE, l.yylex());
 		assertEquals("1", l.yytext());
+		
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals(FilterParser.YYDONE, l.yylex());
 	}
 
 	@Test
@@ -164,6 +167,9 @@ public class LexerTest {
 		assertEquals(">=", l.yytext());
 		assertEquals(FilterParser.YYVALUE, l.yylex());
 		assertEquals("1=2", l.yytext());
+		
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals(FilterParser.YYDONE, l.yylex());
 	}
 
 	@Test
@@ -193,6 +199,10 @@ public class LexerTest {
 		assertEquals("<=", l.yytext());
 		assertEquals(FilterParser.YYVALUE, l.yylex());
 		assertEquals("2", l.yytext());
+		
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals(FilterParser.YYDONE, l.yylex());
 	}
 
 	private void expectException(String filter, String message) {
