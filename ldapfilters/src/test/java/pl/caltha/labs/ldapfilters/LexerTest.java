@@ -289,6 +289,6 @@ public class LexerTest {
 		expectException("(aa=bb))", "Illegal character ) at position 7");
 		expectException("(a:=x)", "Illegal character : at position 2");
 		expectException("(a:String:=x)", "Illegal character : at position 9");
-		expectException("(a:Integer=x)", "Invalid attribute type Integer");
+		expectException("(a:Integer=x)", "Invalid attribute type Integer at position 3");
 	}
 }

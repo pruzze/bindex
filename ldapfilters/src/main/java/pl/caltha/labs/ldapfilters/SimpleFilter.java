@@ -1,11 +1,6 @@
 package pl.caltha.labs.ldapfilters;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public abstract class SimpleFilter<T> implements Filter {
-
-	private static Pattern LIST = Pattern.compile("List<([^>]+)>");
 
 	final private String attribute;
 
@@ -33,42 +28,25 @@ public abstract class SimpleFilter<T> implements Filter {
 		return value;
 	}
 
-	static SimpleFilter<?> newFilter(String attrName, String attrType, Operator operator,
-			String value) {
-		if (attrType == null || attrType.equals("String")) {
+	static SimpleFilter<?> newFilter(String attrName, AttributeType attrType,
+			AttributeType elemType, Operator operator, String value) {
+		switch (attrType) {
+		case STRING:
 			if (operator == Operator.EQUAL
 					&& (value.startsWith("*") || value.endsWith("*")))
 				return new StringFilter(attrName, Operator.SUBSTRING, value);
 			else
 				return new StringFilter(attrName, operator, value);
-		} else if (attrType.equals("Double")) {
-			return new DoubleFilter(attrName, operator, value);
-		} else if (attrType.equals("Long")) {
+		case LONG:
 			return new LongFilter(attrName, operator, value);
-		} else if (attrType.equals("Version")) {
+		case DOUBLE:
+			return new DoubleFilter(attrName, operator, value);
+		case VERSION:
 			return new VersionFilter(attrName, operator, value);
-		} else {
-			Matcher m = LIST.matcher(attrType);
-			if (m.matches()) {
-				String el = m.group(1);
-				AttributeType elType;
-				if (el.equals("String")) {
-					elType = AttributeType.STRING;
-				} else if (el.equals("Double")) {
-					elType = AttributeType.DOUBLE;
-				} else if (el.equals("Long")) {
-					elType = AttributeType.LONG;
-				} else if (el.equals("Version")) {
-					elType = AttributeType.VERSION;
-				} else {
-					throw new IllegalArgumentException(
-							"invalid list element type " + el);
-				}
-				return new ListFilter(attrName, operator, elType, value);
-			} else {
-				throw new IllegalArgumentException("Invalid attribute type "
-						+ attrType);
-			}
+		case LIST:
+			return new ListFilter(attrName, operator, elemType, value);
+		default:
+			throw new ParseException("Invalid attribute type " + attrType);
 		}
 	}
 

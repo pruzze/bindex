@@ -17,7 +17,7 @@ import java.io.StringReader;
 %{
     private String attrName;
     
-    private String attrType;
+    private AttributeType attrType;
     
     private Operator operator;
     
@@ -82,7 +82,7 @@ import java.io.StringReader;
   
     "(" {
         stack.add(0, yystate());
-        attrType = null;
+        attrType = AttributeType.STRING;
         yybegin(YYSIMPLE);
         return yystate();
      }
@@ -94,7 +94,7 @@ import java.io.StringReader;
             throw new ParseException("too many closing parens at position " + yychar);
         
         if(yystate() == YYVALUE || yystate() == YYPRES) {
-           comp.addTerm(SimpleFilter.newFilter(attrName, attrType, operator, value));
+           comp.addTerm(SimpleFilter.newFilter(attrName, attrType, null, operator, value));
         } else {
            CompoundFilter prev = compStack.remove();
            prev.addTerm(comp);
@@ -119,7 +119,7 @@ import java.io.StringReader;
 
 <YYATTRNAME> {
     ":" [^=~():]+ {
-		attrType = yytext().trim().substring(1);
+		attrType = AttributeType.parse(yytext().trim().substring(1), yychar + 1);
 		yybegin(YYATTRTYPE);
 		return yystate();
 	}

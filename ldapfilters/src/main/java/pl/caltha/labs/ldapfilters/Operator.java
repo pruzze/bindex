@@ -12,6 +12,6 @@ public enum Operator {
 			if(repr[i].equals(str))
 				return Operator.values()[i];
 		}
-		throw new ParseException("invalid operator at position " + pos);
+		throw new ParseException("Invalid operator at position " + pos);
 	}
 }
