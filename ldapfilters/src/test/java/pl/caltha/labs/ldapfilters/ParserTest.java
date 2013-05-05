@@ -95,13 +95,13 @@ public class ParserTest {
 	
 	@Test
 	public void testDoubleAttribute() {
-		Filter f = FilterParser.parse("(a:Long=1)");
-		assertEquals("(a:Long=1)", f.toString());
+		Filter f = FilterParser.parse("(a:Double=1.0)");
+		assertEquals("(a:Double=1.0)", f.toString());
 	}
 	
 	@Test
 	public void testVersionAttribute() {
-		Filter f = FilterParser.parse("(a:Long=1)");
-		assertEquals("(a:Long=1)", f.toString());
+		Filter f = FilterParser.parse("(a:Version=1.0.0)");
+		assertEquals("(a:Version=1.0.0)", f.toString());
 	}	
 }

@@ -18,13 +18,15 @@ public class ListFilter extends SimpleFilter<List<?>> {
 
 	ListFilter(String attribute, Operator operator, AttributeType elementType,
 			String value) {
-		super(attribute, operator, parse(elementType, value));
-		this.elementType = elementType;
+		this(attribute, operator, elementType, parse(elementType, value));
 	}
 
 	<T> ListFilter(String attribute, Operator operator,
 			AttributeType elementType, List<T> values) {
 		super(attribute, operator, values);
+		if (elementType == null) {
+			throw new IllegalArgumentException("Missing element type");
+		}
 		if (elementType == AttributeType.LIST) {
 			throw new IllegalArgumentException("Unsupported element type "
 					+ elementType);
@@ -47,6 +49,9 @@ public class ListFilter extends SimpleFilter<List<?>> {
 	}
 
 	private static Object parseElement(AttributeType elementType, String element) {
+		if (elementType == null) {
+			throw new IllegalArgumentException("Missing element type");
+		}
 		switch (elementType) {
 		case STRING:
 			return element;

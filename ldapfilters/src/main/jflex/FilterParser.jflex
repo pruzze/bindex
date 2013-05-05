@@ -13,7 +13,7 @@ import java.io.StringReader;
 %unicode
 %char
 %states YYCOMPOSITE, YYSIMPLE, YYDONE
-%states YYATTRNAME, YYATTRTYPE, YYOPER, YYPRES, YYVALUE
+%states YYATTRNAME, YYATTRTYPESTART, YYATTRTYPE, YYATTRELEMTYPE, YYOPER, YYPRES, YYVALUE
 %{
     private String attrName;
     
@@ -97,7 +97,12 @@ import java.io.StringReader;
             throw new ParseException("too many closing parens at position " + yychar);
         
         if(yystate() == YYVALUE || yystate() == YYPRES) {
-           comp.addTerm(SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value));
+           try {
+	           Filter term = SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value);
+	           comp.addTerm(term);
+	       } catch(Exception e) {    
+	           throw new ParseException(e.getMessage() + " at position " + yychar);
+	       }
         } else {
            CompoundFilter prev = compStack.remove();
            prev.addTerm(comp);
@@ -121,19 +126,33 @@ import java.io.StringReader;
 }
 
 <YYATTRNAME> {
-   ":List<" [^=~()<>:]+ ">" {
-       attrType = AttributeType.LIST;
-       String typeRepr = yytext().trim();
-       attrElemType = AttributeType.parse(typeRepr.substring(6, typeRepr.length() - 1), yychar + 6);
-       yybegin(YYATTRTYPE);
-	   return yystate();
-   } 
+    ":" {
+        yybegin(YYATTRTYPESTART);
+    }
+}
+ 
+<YYATTRTYPESTART> {
+    "List<" {
+        attrType = AttributeType.LIST;
+		yybegin(YYATTRELEMTYPE);
+		return yystate();
+    }	   
 
-    ":" [^=~():]+ {
-		attrType = AttributeType.parse(yytext().trim().substring(1), yychar + 1);
+	[^=~<>():]+ {
+		String typeRepr = yytext().trim();
+		attrType = AttributeType.parse(typeRepr, yychar);
 		yybegin(YYATTRTYPE);
 		return yystate();
 	}
+}
+
+<YYATTRELEMTYPE> {
+    [^=~<>():]+ ">" {
+        String typeRepr = yytext().trim();
+        attrElemType = AttributeType.parse(typeRepr.substring(0, typeRepr.length() - 1), yychar);
+        yybegin(YYATTRTYPE);
+	    return yystate();
+    }
 }
 
 <YYATTRNAME, YYATTRTYPE> {
