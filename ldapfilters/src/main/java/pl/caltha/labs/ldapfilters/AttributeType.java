@@ -8,8 +8,14 @@ public enum AttributeType {
 
 	public static AttributeType parse(String str, int pos) {
 		for (int i = 0; i < repr.length; i++) {
-			if (repr[i].equals(str))
+			if (repr[i].equals(str)) {
+				if (values()[i] == LIST) {
+					throw new ParseException(
+							"Invalid nested List attribute type at position "
+									+ pos);
+				}
 				return values()[i];
+			}
 		}
 		throw new ParseException("Invalid attribute type " + str
 				+ " at position " + pos);

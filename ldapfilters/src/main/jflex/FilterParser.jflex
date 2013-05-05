@@ -18,6 +18,8 @@ import java.io.StringReader;
     private String attrName;
     
     private AttributeType attrType;
+
+    private AttributeType attrElemType; 
     
     private Operator operator;
     
@@ -83,6 +85,7 @@ import java.io.StringReader;
     "(" {
         stack.add(0, yystate());
         attrType = AttributeType.STRING;
+        attrElemType = null;
         yybegin(YYSIMPLE);
         return yystate();
      }
@@ -94,7 +97,7 @@ import java.io.StringReader;
             throw new ParseException("too many closing parens at position " + yychar);
         
         if(yystate() == YYVALUE || yystate() == YYPRES) {
-           comp.addTerm(SimpleFilter.newFilter(attrName, attrType, null, operator, value));
+           comp.addTerm(SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value));
         } else {
            CompoundFilter prev = compStack.remove();
            prev.addTerm(comp);
@@ -118,6 +121,14 @@ import java.io.StringReader;
 }
 
 <YYATTRNAME> {
+   ":List<" [^=~()<>:]+ ">" {
+       attrType = AttributeType.LIST;
+       String typeRepr = yytext().trim();
+       attrElemType = AttributeType.parse(typeRepr.substring(6, typeRepr.length() - 1), yychar + 6);
+       yybegin(YYATTRTYPE);
+	   return yystate();
+   } 
+
     ":" [^=~():]+ {
 		attrType = AttributeType.parse(yytext().trim().substring(1), yychar + 1);
 		yybegin(YYATTRTYPE);

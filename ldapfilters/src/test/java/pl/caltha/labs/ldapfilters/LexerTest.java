@@ -255,7 +255,74 @@ public class LexerTest {
 
 		assertEquals(FilterParser.YYDONE, l.yylex());
 	}
+	
+	@Test
+	public void testStringListAttribute() throws Exception {
+		FilterParser l = start("(a:List<String>=a,b,c)");
 
+		assertEquals(FilterParser.YYSIMPLE, l.yylex());
+		assertEquals(FilterParser.YYATTRNAME, l.yylex());
+		assertEquals("a", l.yytext());
+		assertEquals(FilterParser.YYATTRTYPE, l.yylex());
+		assertEquals(":List<String>", l.yytext());
+		assertEquals(FilterParser.YYOPER, l.yylex());
+		assertEquals("=", l.yytext());
+		assertEquals(FilterParser.YYVALUE, l.yylex());
+		assertEquals("a,b,c", l.yytext());
+
+		assertEquals(FilterParser.YYDONE, l.yylex());
+	}
+	
+	@Test
+	public void testLongListAttribute() throws Exception {
+		FilterParser l = start("(a:List<Long>=1,2,3)");
+
+		assertEquals(FilterParser.YYSIMPLE, l.yylex());
+		assertEquals(FilterParser.YYATTRNAME, l.yylex());
+		assertEquals("a", l.yytext());
+		assertEquals(FilterParser.YYATTRTYPE, l.yylex());
+		assertEquals(":List<Long>", l.yytext());
+		assertEquals(FilterParser.YYOPER, l.yylex());
+		assertEquals("=", l.yytext());
+		assertEquals(FilterParser.YYVALUE, l.yylex());
+		assertEquals("1,2,3", l.yytext());
+
+		assertEquals(FilterParser.YYDONE, l.yylex());
+	}
+
+	@Test
+	public void testDoubleListAttribute() throws Exception {
+		FilterParser l = start("(a:List<Double>=1.0,1.5)");
+
+		assertEquals(FilterParser.YYSIMPLE, l.yylex());
+		assertEquals(FilterParser.YYATTRNAME, l.yylex());
+		assertEquals("a", l.yytext());
+		assertEquals(FilterParser.YYATTRTYPE, l.yylex());
+		assertEquals(":List<Double>", l.yytext());
+		assertEquals(FilterParser.YYOPER, l.yylex());
+		assertEquals("=", l.yytext());
+		assertEquals(FilterParser.YYVALUE, l.yylex());
+		assertEquals("1.0,1.5", l.yytext());
+
+		assertEquals(FilterParser.YYDONE, l.yylex());
+	}
+
+	@Test
+	public void testVersionListAttribute() throws Exception {
+		FilterParser l = start("(a:List<Version>=1.0.0,1.2.0)");
+
+		assertEquals(FilterParser.YYSIMPLE, l.yylex());
+		assertEquals(FilterParser.YYATTRNAME, l.yylex());
+		assertEquals("a", l.yytext());
+		assertEquals(FilterParser.YYATTRTYPE, l.yylex());
+		assertEquals(":List<Version>", l.yytext());
+		assertEquals(FilterParser.YYOPER, l.yylex());
+		assertEquals("=", l.yytext());
+		assertEquals(FilterParser.YYVALUE, l.yylex());
+		assertEquals("1.0.0,1.2.0", l.yytext());
+
+		assertEquals(FilterParser.YYDONE, l.yylex());
+	}
 	
 	private void expectException(String filter, String message) {
 		try {
@@ -290,5 +357,10 @@ public class LexerTest {
 		expectException("(a:=x)", "Illegal character : at position 2");
 		expectException("(a:String:=x)", "Illegal character : at position 9");
 		expectException("(a:Integer=x)", "Invalid attribute type Integer at position 3");
+		expectException("(a:List=x)", "Invalid nested List attribute type at position 3");
+		expectException("(a:List<=x)", "Invalid attribute type List< at position 3");
+		expectException("(a:List<>=x)", "Invalid attribute type List<> at position 3");
+		expectException("(a:List<Integer>=x)", "Invalid attribute type Integer at position 8");
+		expectException("(a:List<List>=x)", "Invalid nested List attribute type at position 8");
 	}
 }
