@@ -45,17 +45,18 @@ public class VisitorTest {
 				.thenAnswer(lp1.answer());
 		when(visitor.visit(isA(ListFilter.class), argThat(lp1.matcher())))
 				.thenAnswer(lp1.answer());
-		when(visitor.visit(isA(NotFilter.class), argThat(lp1.matcher()))).thenAnswer(
-				lp1.answer());
-		when(visitor.visit(isA(OrFilter.class), argThat(lp1.matcher()))).thenAnswer(
-				lp1.answer());
-		when(visitor.visit(isA(AndFilter.class), argThat(lp1.matcher()))).thenAnswer(
-				lp1.answer());
-		when(
-				visitor.visit(isA(Requirement.class),
-						argThat(lp1.matcher()))).thenAnswer(lp1.answer());
+		when(visitor.visit(isA(NotFilter.class), argThat(lp1.matcher())))
+				.thenAnswer(lp1.answer());
+		when(visitor.visit(isA(OrFilter.class), argThat(lp1.matcher())))
+				.thenAnswer(lp1.answer());
+		when(visitor.visit(isA(AndFilter.class), argThat(lp1.matcher())))
+				.thenAnswer(lp1.answer());
+		when(visitor.visit(isA(NestedFilter.class), argThat(lp1.matcher())))
+				.thenAnswer(lp1.answer());
+		when(visitor.visit(isA(Requirement.class), argThat(lp1.matcher())))
+				.thenAnswer(lp1.answer());
 	}
-	
+
 	// simple filters
 
 	@Test
@@ -139,7 +140,62 @@ public class VisitorTest {
 		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
 		inOrder.verify(visitor).visit(isA(Requirement.class), eq(3));
 	}
-	
+
+	// nested filters
+
+	@Test
+	public void testNested1() {
+		Filter f = filter("osgi.wiring.package",
+				filter("osgi.wiring.package", EQUAL, "osgi.wiring.framework"));
+		f.accept(visitor, 0);
+		InOrder inOrder = inOrder(visitor);
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(1));
+	}
+
+	@Test
+	public void testNested2() {
+		Filter f = filter(
+				"osgi.wiring.package",
+				and(filter("osgi.wiring.package", EQUAL,
+						"osgi.wiring.framework"),
+						filter("version", GREATER_EQ, new Version(1, 6, 0))));
+		f.accept(visitor, 0);
+		InOrder inOrder = inOrder(visitor);
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
+		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(3));
+	}
+
+	@Test
+	public void testNested3() {
+		Filter f = filter(
+				"osgi.resource.capability",
+				and(filter(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL, "javax.mail"),
+								filter("version", GREATER_EQ, new Version(1, 4,
+										0)),
+								filter("version", LESS_EQ, new Version(2, 0, 0)))),
+						filter("osgi.identity",
+								filter("license", EQUAL,
+										"http://www.opensource.org/licenses/EPL-1.0"))));
+		f.accept(visitor, 0);
+		InOrder inOrder = inOrder(visitor);
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
+		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
+		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(2));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(3));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(4));
+
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(5));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(6));
+
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(7));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(8));
+	}
+
 	// requirements
 
 	@Test

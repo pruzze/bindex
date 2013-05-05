@@ -56,6 +56,10 @@ public class FilterFactory {
 					+ operator);
 		return new VoidFilter(attribute, operator);
 	}
+	
+	public static Filter filter(String attribute, Filter filter) {
+		return new NestedFilter(attribute, filter);
+	}
 
 	public static Requirement requirement(String namespace, Filter filter) {
 		return new Requirement(namespace, filter,

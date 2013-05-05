@@ -62,6 +62,45 @@ public class FactoryTest {
 	}
 
 	@Test
+	public void testNested1() {
+		Filter filter = filter("osgi.wiring.package",
+				filter("osgi.wiring.package", EQUAL, "osgi.wiring.framework"));
+		assertEquals(
+				"(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))",
+				filter.toString());
+	}
+
+	@Test
+	public void testNested2() {
+		Filter filter = filter(
+				"osgi.wiring.package",
+				and(filter("osgi.wiring.package", EQUAL,
+						"osgi.wiring.framework"),
+						filter("version", GREATER_EQ, new Version(1, 6, 0))));
+		assertEquals(
+				"(osgi.wiring.package=(&(osgi.wiring.package=osgi.wiring.framework)(version:Version>=1.6.0)))",
+				filter.toString());
+	}
+
+	@Test
+	public void testNested3() {
+		Filter filter = filter(
+				"osgi.resource.capability",
+				and(filter(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL, "javax.mail"),
+								filter("version", GREATER_EQ, new Version(1, 4,
+										0)),
+								filter("version", LESS_EQ, new Version(2, 0, 0)))),
+						filter("osgi.identity",
+								filter("license", EQUAL,
+										"http://www.opensource.org/licenses/EPL-1.0"))));
+		assertEquals(
+				"(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))",
+				filter.toString());
+	}
+
+	@Test
 	public void testRequirement() {
 		Filter filter = requirement(
 				"osgi.wiring.package",

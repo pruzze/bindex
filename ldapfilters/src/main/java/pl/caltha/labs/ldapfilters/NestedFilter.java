@@ -4,15 +4,11 @@ public class NestedFilter implements Filter {
 
 	final private String attribute;
 
-	private Filter nested;
+	final private Filter nested;
 	
 	public NestedFilter(String attribute, Filter nested) {
 		this.attribute = attribute;
 		this.nested = nested;
-	}
-	
-	public NestedFilter(String attribute) {
-		this.attribute = attribute;
 	}
 
 	public String getAttribute() {
@@ -23,11 +19,16 @@ public class NestedFilter implements Filter {
 		return nested;
 	}
 
-	public void setNested(Filter nested) {
-		this.nested = nested;
-	}
-
 	public <T> T accept(FilterVisitor<T> visitor, T data) {
+		data = nested.accept(visitor, data);
 		return visitor.visit(this, data);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder buff = new StringBuilder();
+		buff.append('(').append(attribute).append('=');
+		buff.append(nested.toString()).append(')');
+		return buff.toString();
 	}
 }
