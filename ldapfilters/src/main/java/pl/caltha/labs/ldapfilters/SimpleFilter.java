@@ -5,8 +5,6 @@ import java.util.regex.Pattern;
 
 public abstract class SimpleFilter<T> implements Filter {
 
-	private static Pattern ATTR = Pattern.compile("([^:]+):(.*)");
-
 	private static Pattern LIST = Pattern.compile("List<([^>]+)>");
 
 	final private String attribute;
@@ -35,19 +33,9 @@ public abstract class SimpleFilter<T> implements Filter {
 		return value;
 	}
 
-	static SimpleFilter<?> newFilter(String attr, Operator operator,
+	static SimpleFilter<?> newFilter(String attrName, String attrType, Operator operator,
 			String value) {
-		String attrName;
-		String attrType;
-		Matcher m = ATTR.matcher(attr);
-		if (m.matches()) {
-			attrName = m.group(1);
-			attrType = m.group(2);
-		} else {
-			attrName = attr;
-			attrType = "String";
-		}
-		if (attrType.equals("String")) {
+		if (attrType == null || attrType.equals("String")) {
 			if (operator == Operator.EQUAL
 					&& (value.startsWith("*") || value.endsWith("*")))
 				return new StringFilter(attrName, Operator.SUBSTRING, value);
@@ -60,7 +48,7 @@ public abstract class SimpleFilter<T> implements Filter {
 		} else if (attrType.equals("Version")) {
 			return new VersionFilter(attrName, operator, value);
 		} else {
-			m = LIST.matcher(attrType);
+			Matcher m = LIST.matcher(attrType);
 			if (m.matches()) {
 				String el = m.group(1);
 				AttributeType elType;
@@ -78,7 +66,7 @@ public abstract class SimpleFilter<T> implements Filter {
 				}
 				return new ListFilter(attrName, operator, elType, value);
 			} else {
-				throw new IllegalArgumentException("invalid attribute type "
+				throw new IllegalArgumentException("Invalid attribute type "
 						+ attrType);
 			}
 		}

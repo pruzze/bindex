@@ -80,4 +80,28 @@ public class ParserTest {
 		Filter f = FilterParser.parse("(&(a=v)(|(b=x)(c=z))(!(d=q)))");
 		assertEquals("(&(a=v)(|(b=x)(c=z))(!(d=q)))", f.toString());
 	}
+	
+	@Test
+	public void testLongAttribute() {
+		Filter f = FilterParser.parse("(a:Long=1)");
+		assertEquals("(a:Long=1)", f.toString());
+	}
+
+	@Test
+	public void testExplicitStringAttribute() {
+		Filter f = FilterParser.parse("(a:String=x)");
+		assertEquals("(a=x)", f.toString());
+	}
+	
+	@Test
+	public void testDoubleAttribute() {
+		Filter f = FilterParser.parse("(a:Long=1)");
+		assertEquals("(a:Long=1)", f.toString());
+	}
+	
+	@Test
+	public void testVersionAttribute() {
+		Filter f = FilterParser.parse("(a:Long=1)");
+		assertEquals("(a:Long=1)", f.toString());
+	}	
 }

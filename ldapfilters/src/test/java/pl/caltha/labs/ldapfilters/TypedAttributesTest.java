@@ -76,56 +76,56 @@ public class TypedAttributesTest {
 
 	@Test
 	public void testParseStringAttribute() {
-		Filter f = newFilter("a", EQUAL, "v");
+		Filter f = newFilter("a", null, EQUAL, "v");
 		assertEquals("(a=v)", f.toString());
 	}
 
 	@Test
 	public void testParseLongAttribute() {
-		Filter f = newFilter("a:Long", EQUAL, "1");
+		Filter f = newFilter("a", "Long", EQUAL, "1");
 		assertEquals("(a:Long=1)", f.toString());
 	}
 
 	@Test
 	public void testParseDoubleAttribute() {
-		Filter f = newFilter("a:Double", EQUAL, "1.5");
+		Filter f = newFilter("a", "Double", EQUAL, "1.5");
 		assertEquals("(a:Double=1.5)", f.toString());
 	}
 
 	@Test
 	public void testParseVersionttribute() {
-		Filter f = newFilter("a:Version", EQUAL, "1.2.3.qual");
+		Filter f = newFilter("a", "Version", EQUAL, "1.2.3.qual");
 		assertEquals("(a:Version=1.2.3.qual)", f.toString());
 	}
 
 	@Test
 	public void testParsetringListAttribute() {
-		Filter f = newFilter("a:List<String>", EQUAL, "\"a,\\\\b,\\,c\"");
+		Filter f = newFilter("a", "List<String>", EQUAL, "\"a,\\\\b,\\,c\"");
 		assertEquals("(a:List<String>=\"a,\\\\b,\\,c\")", f.toString());
 	}
 
 	@Test
 	public void testParseLongListAttribute() {
-		Filter f = newFilter("a:List<Long>", EQUAL, "\"1,2,3\"");
+		Filter f = newFilter("a", "List<Long>", EQUAL, "\"1,2,3\"");
 		assertEquals("(a:List<Long>=\"1,2,3\")", f.toString());
 	}
 
 	@Test
 	public void testParseDoubleListAttribute() {
-		Filter f = newFilter("a:List<Double>", EQUAL, "\"1.0,1.0E15\"");
+		Filter f = newFilter("a", "List<Double>", EQUAL, "\"1.0,1.0E15\"");
 		assertEquals("(a:List<Double>=\"1.0,1.0E15\")", f.toString());
 	}
 
 	@Test
 	public void testParseVersionListAttribute() {
-		Filter f = newFilter("a:List<Version>", EQUAL, "\"1.0.0,1.2.0\"");
+		Filter f = newFilter("a", "List<Version>", EQUAL, "\"1.0.0,1.2.0\"");
 		assertEquals("(a:List<Version>=\"1.0.0,1.2.0\")", f.toString());
 	}
 
 	@Test
 	public void testParseInvalidListListAttribute() {
 		try {
-			newFilter("a:List<List>", EQUAL, "\"\"");
+			newFilter("a", "List<List>", EQUAL, "\"\"");
 			Assert.fail("should have thrown an exception");
 		} catch (IllegalArgumentException e) {
 			// OK

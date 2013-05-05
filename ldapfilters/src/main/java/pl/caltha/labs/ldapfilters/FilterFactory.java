@@ -54,7 +54,7 @@ public class FilterFactory {
 		if (operator != Operator.PRESENT)
 			throw new IllegalArgumentException("value required for opreator "
 					+ operator);
-		return SimpleFilter.newFilter(attribute, operator, null);
+		return SimpleFilter.newFilter(attribute, null, operator, null);
 	}
 
 	public static Filter requirement(String namespace, Filter filter) {
