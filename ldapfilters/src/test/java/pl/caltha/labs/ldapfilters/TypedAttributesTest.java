@@ -81,7 +81,7 @@ public class TypedAttributesTest {
 
 	@Test
 	public void testParseStringAttribute() {
-		Filter f = newFilter("a", null, null, EQUAL, "v");
+		Filter f = newFilter("a", STRING, null, EQUAL, "v");
 		assertEquals("(a=v)", f.toString());
 	}
 

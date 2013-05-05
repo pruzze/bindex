@@ -17,8 +17,4 @@ public class LongFilter extends SimpleFilter<Long> {
 	public <V> V accept(FilterVisitor<V> visitor, V data) {
 		return visitor.visit(this, data);
 	}
-
-	protected void appendType(StringBuilder buff) {
-		buff.append(":Long");
-	}
 }

@@ -51,6 +51,7 @@ public abstract class SimpleFilter<T> implements Filter {
 	}
 
 	protected void appendType(StringBuilder buff) {
+		AttributeType.appendTo(getAttributeType(), null, buff);
 	}
 
 	protected void appendValue(StringBuilder buff) {
@@ -63,24 +64,7 @@ public abstract class SimpleFilter<T> implements Filter {
 		buff.append('(');
 		buff.append(attribute);
 		appendType(buff);
-		switch (operator) {
-		case EQUAL:
-		case SUBSTRING:
-			buff.append('=');
-			break;
-		case APPROX:
-			buff.append("~=");
-			break;
-		case PRESENT:
-			buff.append("=*");
-			break;
-		case LESS_EQ:
-			buff.append("<=");
-			break;
-		case GREATER_EQ:
-			buff.append(">=");
-			break;
-		}
+		Operator.appendTo(operator, buff);
 		if (operator != Operator.PRESENT) {
 			appendValue(buff);
 		}

@@ -77,25 +77,7 @@ public class ListFilter extends SimpleFilter<List<?>> {
 
 	@Override
 	protected void appendType(StringBuilder buff) {
-		buff.append(":List<");
-		switch (elementType) {
-		case STRING:
-			buff.append("String");
-			break;
-		case LONG:
-			buff.append("Long");
-			break;
-		case DOUBLE:
-			buff.append("Double");
-			break;
-		case VERSION:
-			buff.append("Version");
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported element type "
-					+ elementType);
-		}
-		buff.append(">");
+		AttributeType.appendTo(AttributeType.LIST, elementType, buff);
 	}
 
 	@Override
