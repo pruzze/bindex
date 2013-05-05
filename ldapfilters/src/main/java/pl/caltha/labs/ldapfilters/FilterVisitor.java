@@ -14,6 +14,10 @@ public class FilterVisitor<T> {
 		return data;
 	}
 
+	public T visit(VoidFilter f, T data) {
+		return data;
+	}
+	
 	public T visit(StringFilter f, T data) {
 		return data;
 	}
