@@ -18,7 +18,7 @@ import java.util.Collections;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-public class FilterFactoryTest {
+public class FactoryTest {
 	@Test
 	public void testSimple() {
 		Filter filter = filter("a", EQUAL, "val");
