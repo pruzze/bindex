@@ -2,24 +2,14 @@ package pl.caltha.labs.ldapfilters;
 
 import java.util.Map;
 
-/**
- * Require-Capability: namespace;filter:="(attr-filter)" represented as
- * (namespace=(attr-filter))
- * 
- * @author rafal
- * 
- */
 public class Requirement implements Filter {
 
-	private String namespace;
+	private NestedFilter filter;
 	
 	private Map<String, String> properties;
 
-	private Filter filter;
-
 	Requirement(String namespace, Filter filter, Map<String, String> properties) {
-		this.namespace = namespace;
-		this.filter = filter;
+		this.filter = new NestedFilter(namespace, filter);
 		this.properties = properties;
 		for (String key : properties.keySet()) {
 			if (key.equalsIgnoreCase("filter"))
@@ -30,14 +20,14 @@ public class Requirement implements Filter {
 	@Override
 	public String toString() {
 		StringBuilder buff = new StringBuilder();
-		buff.append("(").append(namespace);
-		buff.append(";filter:=");
-		buff.append(filter.toString());
+		buff.append(filter.getAttribute());
+		buff.append(";filter:=\"");
+		buff.append(filter.getFilter().toString());
+		buff.append("\"");
 		for (Map.Entry<String, String> entry : properties.entrySet()) {
 			buff.append(';').append(entry.getKey());
 			buff.append(":=").append(entry.getValue());
 		}
-		buff.append(")");
 		return buff.toString();
 	}
 

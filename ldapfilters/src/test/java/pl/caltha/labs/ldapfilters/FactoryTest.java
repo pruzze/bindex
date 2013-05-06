@@ -101,17 +101,6 @@ public class FactoryTest {
 	}
 
 	@Test
-	public void testRequirement() {
-		Filter filter = requirement(
-				"osgi.wiring.package",
-				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
-						filter("version", GREATER_EQ, new Version(1, 6, 0))));
-		assertEquals(
-				"(osgi.wiring.package;filter:=(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0)))",
-				filter.toString());
-	}
-
-	@Test
 	public void testOptionalRequirement() {
 		Filter filter = requirement(
 				"osgi.wiring.package",
@@ -119,7 +108,7 @@ public class FactoryTest {
 						filter("version", GREATER_EQ, new Version(1, 6, 0))),
 				Collections.singletonMap("resolution", "optional"));
 		assertEquals(
-				"(osgi.wiring.package;filter:=(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0));resolution:=optional)",
+				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\";resolution:=optional",
 				filter.toString());
 	}
 
@@ -131,7 +120,37 @@ public class FactoryTest {
 						filter("version", GREATER_EQ, new Version(1, 6, 0))),
 				Collections.singletonMap("cardinality", "multiple"));
 		assertEquals(
-				"(osgi.wiring.package;filter:=(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0));cardinality:=multiple)",
+				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\";cardinality:=multiple",
+				filter.toString());
+	}
+
+	@Test
+	public void testRequirement() {
+		Filter filter = requirement(
+				"osgi.wiring.package",
+				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
+						filter("version", GREATER_EQ, new Version(1, 6, 0))));
+		assertEquals(
+				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\"",
+				filter.toString());
+	}
+
+	// RFC 187
+	@Test
+	public void testComplexRequirement() {
+		Filter filter = requirement(
+				"osgi.resource.capability",
+				and(filter(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL, "javax.mail"),
+								filter("version", GREATER_EQ, new Version(1, 4,
+										0)),
+								filter("version", LESS_EQ, new Version(2, 0, 0)))),
+						filter("osgi.identity",
+								filter("license", EQUAL,
+										"http://www.opensource.org/licenses/EPL-1.0"))));
+		assertEquals(
+				"osgi.resource.capability;filter:=\"(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0)))\"",
 				filter.toString());
 	}
 
@@ -150,24 +169,5 @@ public class FactoryTest {
 		} catch (IllegalArgumentException e) {
 			// OK
 		}
-	}
-
-	// RFC 187
-	@Test
-	public void testComplexRequirement() {
-		Filter filter = and(
-				requirement(
-						"osgi.wiring.package",
-						and(filter("osgi.wiring.package", EQUAL, "javax.mail"),
-								filter("version", GREATER_EQ, new Version(1, 4,
-										0)),
-								filter("version", LESS_EQ, new Version(2, 0, 0)))),
-				requirement(
-						"osgi.identity",
-						filter("license", EQUAL,
-								"http://www.opensource.org/licenses/EPL-1.0")));
-		assertEquals(
-				"(&(osgi.wiring.package;filter:=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity;filter:=(license=http://www.opensource.org/licenses/EPL-1.0)))",
-				filter.toString());
 	}
 }

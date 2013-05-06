@@ -4,23 +4,23 @@ public class NestedFilter implements Filter {
 
 	final private String attribute;
 
-	final private Filter nested;
+	final private Filter filter;
 	
-	public NestedFilter(String attribute, Filter nested) {
+	public NestedFilter(String attribute, Filter filter) {
 		this.attribute = attribute;
-		this.nested = nested;
+		this.filter = filter;
 	}
 
 	public String getAttribute() {
 		return attribute;
 	}
 	
-	public Filter getNested() {
-		return nested;
+	public Filter getFilter() {
+		return filter;
 	}
 
 	public <T> T accept(FilterVisitor<T> visitor, T data) {
-		data = nested.accept(visitor, data);
+		data = filter.accept(visitor, data);
 		return visitor.visit(this, data);
 	}
 	
@@ -28,7 +28,7 @@ public class NestedFilter implements Filter {
 	public String toString() {
 		StringBuilder buff = new StringBuilder();
 		buff.append('(').append(attribute).append('=');
-		buff.append(nested.toString()).append(')');
+		buff.append(filter.toString()).append(')');
 		return buff.toString();
 	}
 }

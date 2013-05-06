@@ -138,7 +138,8 @@ public class VisitorTest {
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
 		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
 		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
-		inOrder.verify(visitor).visit(isA(Requirement.class), eq(3));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(3));
+		inOrder.verify(visitor).visit(isA(Requirement.class), eq(4));
 	}
 
 	// nested filters
@@ -200,27 +201,31 @@ public class VisitorTest {
 
 	@Test
 	public void testComplexRequirement() {
-		Filter f = and(
-				requirement(
+		Filter f = requirement(
+				"osgi.resource.capability",
+				and(filter(
 						"osgi.wiring.package",
 						and(filter("osgi.wiring.package", EQUAL, "javax.mail"),
 								filter("version", GREATER_EQ, new Version(1, 4,
 										0)),
 								filter("version", LESS_EQ, new Version(2, 0, 0)))),
-				requirement(
-						"osgi.identity",
-						filter("license", EQUAL,
-								"http://www.opensource.org/licenses/EPL-1.0")));
+						filter("osgi.identity",
+								filter("license", EQUAL,
+										"http://www.opensource.org/licenses/EPL-1.0"))));
 		f.accept(visitor, 0);
 		InOrder inOrder = inOrder(visitor);
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
 		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
 		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(2));
 		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(3));
-		inOrder.verify(visitor).visit(isA(Requirement.class), eq(4));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(4));
+		
 		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(5));
-		inOrder.verify(visitor).visit(isA(Requirement.class), eq(6));
-		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(7));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(6));
+		
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(7));	
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(8));
+		inOrder.verify(visitor).visit(isA(Requirement.class), eq(9));
 	}
 
 	private static class LastPlusOne {
