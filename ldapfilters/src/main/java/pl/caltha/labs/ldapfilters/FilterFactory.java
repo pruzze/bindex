@@ -70,4 +70,8 @@ public class FilterFactory {
 			Map<String, String> properties) {
 		return new Requirement(namespace, filter, properties);
 	}
+	
+	public static Requirements requirements(Requirement ...requirements) {
+		return new Requirements(Arrays.asList(requirements));
+	}
 }

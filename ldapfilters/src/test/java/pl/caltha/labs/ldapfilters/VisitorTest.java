@@ -1,5 +1,6 @@
 package pl.caltha.labs.ldapfilters;
 
+import static java.util.Collections.singletonMap;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -11,6 +12,7 @@ import static pl.caltha.labs.ldapfilters.FilterFactory.filter;
 import static pl.caltha.labs.ldapfilters.FilterFactory.not;
 import static pl.caltha.labs.ldapfilters.FilterFactory.or;
 import static pl.caltha.labs.ldapfilters.FilterFactory.requirement;
+import static pl.caltha.labs.ldapfilters.FilterFactory.requirements;
 import static pl.caltha.labs.ldapfilters.Operator.EQUAL;
 import static pl.caltha.labs.ldapfilters.Operator.GREATER_EQ;
 import static pl.caltha.labs.ldapfilters.Operator.LESS_EQ;
@@ -226,6 +228,55 @@ public class VisitorTest {
 		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(7));	
 		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(8));
 		inOrder.verify(visitor).visit(isA(Requirement.class), eq(9));
+	}
+	
+	@Test
+	public void testRequirements1() {
+		Filter f = requirements(requirement(
+				"osgi.wiring.package",
+				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
+						filter("version", GREATER_EQ, new Version(1, 6, 0)))));
+		f.accept(visitor, 0);
+		InOrder inOrder = inOrder(visitor);
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
+		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(3));
+		inOrder.verify(visitor).visit(isA(Requirement.class), eq(4));
+		inOrder.verify(visitor).visit(isA(Requirements.class), eq(5));
+	}
+
+	@Test
+	public void testRequirements2() {
+		Filter f = requirements(
+				requirement(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL,
+								"org.osgi.framework"),
+								filter("version", GREATER_EQ, new Version(1, 6,
+										0)))),
+				requirement(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL,
+								"org.osgi.service.log"),
+								filter("version", GREATER_EQ, new Version(1, 0,
+										0))),
+						singletonMap("resolution", "optional")));
+		f.accept(visitor, 0);
+		InOrder inOrder = inOrder(visitor);
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(0));
+		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(1));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(2));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(3));
+		inOrder.verify(visitor).visit(isA(Requirement.class), eq(4));
+		
+		inOrder.verify(visitor).visit(isA(StringFilter.class), eq(5));
+		inOrder.verify(visitor).visit(isA(VersionFilter.class), eq(6));
+		inOrder.verify(visitor).visit(isA(AndFilter.class), eq(7));
+		inOrder.verify(visitor).visit(isA(NestedFilter.class), eq(8));
+		inOrder.verify(visitor).visit(isA(Requirement.class), eq(9));
+		
+		inOrder.verify(visitor).visit(isA(Requirements.class), eq(10));
 	}
 
 	private static class LastPlusOne {

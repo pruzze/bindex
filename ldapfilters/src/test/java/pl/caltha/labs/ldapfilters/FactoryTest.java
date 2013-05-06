@@ -1,19 +1,19 @@
 package pl.caltha.labs.ldapfilters;
 
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static pl.caltha.labs.ldapfilters.FilterFactory.and;
 import static pl.caltha.labs.ldapfilters.FilterFactory.filter;
 import static pl.caltha.labs.ldapfilters.FilterFactory.not;
 import static pl.caltha.labs.ldapfilters.FilterFactory.requirement;
+import static pl.caltha.labs.ldapfilters.FilterFactory.requirements;
 import static pl.caltha.labs.ldapfilters.Operator.APPROX;
 import static pl.caltha.labs.ldapfilters.Operator.EQUAL;
 import static pl.caltha.labs.ldapfilters.Operator.GREATER_EQ;
 import static pl.caltha.labs.ldapfilters.Operator.LESS_EQ;
 import static pl.caltha.labs.ldapfilters.Operator.PRESENT;
 import static pl.caltha.labs.ldapfilters.Operator.SUBSTRING;
-
-import java.util.Collections;
 
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -106,7 +106,7 @@ public class FactoryTest {
 				"osgi.wiring.package",
 				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
 						filter("version", GREATER_EQ, new Version(1, 6, 0))),
-				Collections.singletonMap("resolution", "optional"));
+				singletonMap("resolution", "optional"));
 		assertEquals(
 				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\";resolution:=optional",
 				filter.toString());
@@ -118,7 +118,7 @@ public class FactoryTest {
 				"osgi.wiring.package",
 				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
 						filter("version", GREATER_EQ, new Version(1, 6, 0))),
-				Collections.singletonMap("cardinality", "multiple"));
+				singletonMap("cardinality", "multiple"));
 		assertEquals(
 				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\";cardinality:=multiple",
 				filter.toString());
@@ -162,12 +162,43 @@ public class FactoryTest {
 					and(filter("osgi.wiring.package", EQUAL,
 							"org.osgi.framework"),
 							filter("version", GREATER_EQ, new Version(1, 6, 0))),
-					Collections
-							.singletonMap("filter",
-									"(&(osgi.wiring.package=org.osgi.framework)(version>=1.6.0))"));
+					singletonMap("filter",
+							"(&(osgi.wiring.package=org.osgi.framework)(version>=1.6.0))"));
 			fail("should have thrown an exception");
 		} catch (IllegalArgumentException e) {
 			// OK
 		}
+	}
+
+	@Test
+	public void testRequirements1() {
+		Filter filter = requirements(requirement(
+				"osgi.wiring.package",
+				and(filter("osgi.wiring.package", EQUAL, "org.osgi.framework"),
+						filter("version", GREATER_EQ, new Version(1, 6, 0)))));
+		assertEquals(
+				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\"",
+				filter.toString());
+	}
+
+	@Test
+	public void testRequirements2() {
+		Filter filter = requirements(
+				requirement(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL,
+								"org.osgi.framework"),
+								filter("version", GREATER_EQ, new Version(1, 6,
+										0)))),
+				requirement(
+						"osgi.wiring.package",
+						and(filter("osgi.wiring.package", EQUAL,
+								"org.osgi.service.log"),
+								filter("version", GREATER_EQ, new Version(1, 0,
+										0))),
+						singletonMap("resolution", "optional")));
+		assertEquals(
+				"osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.framework)(version:Version>=1.6.0))\",osgi.wiring.package;filter:=\"(&(osgi.wiring.package=org.osgi.service.log)(version:Version>=1.0.0))\";resolution:=optional",
+				filter.toString());
 	}
 }
