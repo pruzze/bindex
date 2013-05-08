@@ -12,8 +12,8 @@ import java.io.StringReader;
 %integer
 %unicode
 %char
-%states YYCOMPOSITE, YYSIMPLE, YYDONE
-%states YYATTRNAME, YYATTRTYPESTART, YYATTRTYPE, YYATTRELEMTYPE, YYOPER, YYPRES, YYVALUE
+%states YYSIMPLE, YYCOMPOSITE, YYNESTED, YYDONE
+%states YYATTRNAME, YYTYPEDATTR, YYATTRTYPE, YYATTRELEMTYPE, YYOPER, YYPRES, YYVALUE
 %{
     private String attrName;
     
@@ -71,7 +71,7 @@ import java.io.StringReader;
 %}
 %%
 
-<YYINITIAL, YYCOMPOSITE> {
+<YYINITIAL, YYCOMPOSITE, YYNESTED> {
     "(&" | 
     "(|" | 
     "(!" {
@@ -91,7 +91,7 @@ import java.io.StringReader;
      }
 }
 
-<YYCOMPOSITE, YYVALUE, YYPRES> {
+<YYCOMPOSITE, YYNESTED, YYVALUE, YYPRES> {
     ")" {
         if(stack.size() == 0)  
             throw new ParseException("too many closing parens at position " + yychar);
@@ -127,11 +127,11 @@ import java.io.StringReader;
 
 <YYATTRNAME> {
     ":" {
-        yybegin(YYATTRTYPESTART);
+        yybegin(YYTYPEDATTR);
     }
 }
  
-<YYATTRTYPESTART> {
+<YYTYPEDATTR> {
     "List<" {
         attrType = AttributeType.LIST;
 		yybegin(YYATTRELEMTYPE);
@@ -173,10 +173,20 @@ import java.io.StringReader;
 }
 
 <YYOPER> {
+    "(" {
+        if(operator != Operator.EQUAL) 
+        	throw new ParseException("Illegal operator preceeding nested filter at position " + yychar);
+        yypushback(1);
+    	compStack.add(0, comp);
+        comp = new NestedFilter(attrName);
+        yybegin(YYNESTED);
+        return yystate();
+    }
+
     ( [^\\()] | "\\\\" | "\\(" | "\\)" )* {
-      yybegin(YYVALUE);
-      value = yytext();
-      return yystate();
+        yybegin(YYVALUE);
+        value = yytext();
+        return yystate();
     }
 }
 

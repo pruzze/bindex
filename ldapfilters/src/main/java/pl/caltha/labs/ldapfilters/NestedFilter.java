@@ -1,14 +1,17 @@
 package pl.caltha.labs.ldapfilters;
 
-public class NestedFilter implements Filter {
+public class NestedFilter extends CompoundFilter {
 
 	final private String attribute;
-
-	final private Filter filter;
+	
+	public NestedFilter(String attribute) {
+		super();
+		this.attribute = attribute;
+	}
 	
 	public NestedFilter(String attribute, Filter filter) {
+		super(filter);
 		this.attribute = attribute;
-		this.filter = filter;
 	}
 
 	public String getAttribute() {
@@ -16,11 +19,19 @@ public class NestedFilter implements Filter {
 	}
 	
 	public Filter getFilter() {
-		return filter;
+		return getTerms().get(0);
 	}
 
+	@Override
+	void addTerm(Filter term) {
+		if (getTerms().isEmpty())
+			super.addTerm(term);
+		else
+			throw new IllegalStateException("already contains a term");
+	}
+	
 	public <T> T accept(FilterVisitor<T> visitor, T data) {
-		data = filter.accept(visitor, data);
+		data = getFilter().accept(visitor, data);
 		return visitor.visit(this, data);
 	}
 	
@@ -28,7 +39,7 @@ public class NestedFilter implements Filter {
 	public String toString() {
 		StringBuilder buff = new StringBuilder();
 		buff.append('(').append(attribute).append('=');
-		buff.append(filter.toString()).append(')');
+		buff.append(getFilter().toString()).append(')');
 		return buff.toString();
 	}
 }
