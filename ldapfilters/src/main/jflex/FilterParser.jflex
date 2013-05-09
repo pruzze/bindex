@@ -14,6 +14,10 @@ import java.io.StringReader;
 %char
 %states YYSIMPLE, YYCOMPOSITE, YYNESTED, YYDONE
 %states YYATTRNAME, YYTYPEDATTR, YYATTRTYPE, YYATTRELEMTYPE, YYOPER, YYPRES, YYVALUE
+%ctorarg int allowedNestingDepth
+%init{
+	this.allowedNestingDepth = allowedNestingDepth;
+%init}
 %{
     private String attrName;
     
@@ -30,6 +34,10 @@ import java.io.StringReader;
     private CompoundFilter comp = new Sentinel();
 
 	private final LinkedList<CompoundFilter> compStack = new LinkedList<CompoundFilter>();
+	
+	private final int allowedNestingDepth;
+	
+	private int nestingDepth = 0;
 	
 	private static class Sentinel extends CompoundFilter {
 	    public <V> V accept(FilterVisitor<V> visitor, V data) {
@@ -57,7 +65,11 @@ import java.io.StringReader;
 	}
 	
 	public static Filter parse(String input) throws ParseException {
-	    FilterParser parser = new FilterParser(new StringReader(input));
+		return parse(input, 0);
+	}
+	
+	public static Filter parse(String input, int allowedNestingDepth) throws ParseException {
+	    FilterParser parser = new FilterParser(new StringReader(input), allowedNestingDepth);
 	    try {
 	        int state;
 	        do {
@@ -97,12 +109,12 @@ import java.io.StringReader;
             throw new ParseException("too many closing parens at position " + yychar);
         
         if(yystate() == YYVALUE || yystate() == YYPRES) {
-           try {
-	           Filter term = SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value);
-	           comp.addTerm(term);
-	       } catch(Exception e) {    
-	           throw new ParseException(e.getMessage() + " at position " + yychar);
-	       }
+            try {
+	            Filter term = SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value);
+	            comp.addTerm(term);
+	        } catch(Exception e) {    
+	            throw new ParseException(e.getMessage() + " at position " + yychar);
+	        }
         } else {
            CompoundFilter prev = compStack.remove();
            prev.addTerm(comp);
@@ -110,9 +122,13 @@ import java.io.StringReader;
         }
         
         if(stack.size() == 1)
-          yybegin(YYDONE);
+            yybegin(YYDONE);
         else
-          yybegin(stack.remove());
+            yybegin(stack.remove());
+            
+        if(yystate() == YYNESTED)
+        	nestingDepth--;
+            
         return yystate(); 
     }
 }
@@ -156,14 +172,12 @@ import java.io.StringReader;
 }
 
 <YYATTRNAME, YYATTRTYPE> {
-	"=" |
-	"~=" |
-	">=" |
-	"<=" {
+	"=" | "~=" | ">=" | "<=" {
 		yybegin(YYOPER);
 		operator = Operator.parse(yytext(), yychar);
 		return yystate();
 	}		
+	
 	"=*)" {
 	    yypushback(1);
 		yybegin(YYPRES);
@@ -176,6 +190,9 @@ import java.io.StringReader;
     "(" {
         if(operator != Operator.EQUAL) 
         	throw new ParseException("Illegal operator preceeding nested filter at position " + yychar);
+        nestingDepth++;
+        if(nestingDepth > allowedNestingDepth)
+        	throw new ParseException("Allowed nesting depth of " + allowedNestingDepth + " exceeded at position " + yychar); 		
         yypushback(1);
     	compStack.add(0, comp);
         comp = new NestedFilter(attrName);

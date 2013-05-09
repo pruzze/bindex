@@ -11,7 +11,11 @@ import org.junit.Test;
 public class LexerTest {
 
 	private FilterParser start(String input) {
-		return new FilterParser(new StringReader(input));
+		return start(input, 0);
+	}
+	
+	private FilterParser start(String input, int allowedNestingDepth) {
+		return new FilterParser(new StringReader(input), allowedNestingDepth);
 	}
 
 	@Test
@@ -334,7 +338,7 @@ public class LexerTest {
 
 	@Test
 	public void testNested1() throws Exception {
-		FilterParser l = start("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))");
+		FilterParser l = start("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))", 1);
 		assertEquals(FilterParser.YYSIMPLE, l.yylex());
 		assertEquals(FilterParser.YYATTRNAME, l.yylex());
 		assertEquals("osgi.wiring.package", l.yytext());
@@ -354,7 +358,7 @@ public class LexerTest {
 
 	@Test
 	public void testNested2() throws Exception {
-		FilterParser l = start("(osgi.wiring.package=(&(osgi.wiring.package=osgi.wiring.framework)(version:Version>=1.6.0)))");
+		FilterParser l = start("(osgi.wiring.package=(&(osgi.wiring.package=osgi.wiring.framework)(version:Version>=1.6.0)))", 1);
 		assertEquals(FilterParser.YYSIMPLE, l.yylex());
 		assertEquals(FilterParser.YYATTRNAME, l.yylex());
 		assertEquals("osgi.wiring.package", l.yytext());
@@ -391,7 +395,7 @@ public class LexerTest {
 
 	@Test
 	public void testNested3() throws Exception {
-		FilterParser l = start("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))");
+		FilterParser l = start("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))", 2);
 		assertEquals(FilterParser.YYSIMPLE, l.yylex());
 		assertEquals(FilterParser.YYATTRNAME, l.yylex());
 		assertEquals("osgi.resource.capability", l.yytext());
@@ -467,8 +471,12 @@ public class LexerTest {
 	}
 
 	private void expectException(String filter, String message) {
+		expectException(filter, 0, message);
+	}
+	
+	private void expectException(String filter, int allowedNestingDepth, String message) {
 		try {
-			FilterParser l = start(filter);
+			FilterParser l = start(filter, allowedNestingDepth);
 			int yystate;
 			do {
 				yystate = l.yylex();
@@ -509,7 +517,7 @@ public class LexerTest {
 		expectException("(a:List<List>=x)",
 				"Unsupported element type List at position 15");
 		// nested filters
-		expectException("(a=(b=c)", "Unexpected end of input");
-		expectException("(a~=(b=c))", "Illegal operator preceeding nested filter at position 4");
+		expectException("(a=(b=c)", 1, "Unexpected end of input");
+		expectException("(a~=(b=c))", 1, "Illegal operator preceeding nested filter at position 4");
 	}
 }

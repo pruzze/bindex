@@ -107,19 +107,19 @@ public class ParserTest {
 	
 	@Test
 	public void testNested1() throws Exception {
-		Filter f = FilterParser.parse("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))");
+		Filter f = FilterParser.parse("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))", 1);
 		assertEquals("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))", f.toString());
 	}
 	
 	@Test
 	public void testNested2() throws Exception {
-		Filter f = FilterParser.parse("(osgi.wiring.package=(&(osgi.wiring.package=osgi.wiring.framework)(version:Version>=1.6.0)))");
+		Filter f = FilterParser.parse("(osgi.wiring.package=(&(osgi.wiring.package=osgi.wiring.framework)(version:Version>=1.6.0)))", 1);
 		assertEquals("(osgi.wiring.package=(&(osgi.wiring.package=osgi.wiring.framework)(version:Version>=1.6.0)))", f.toString());
 	}
 	
 	@Test
 	public void testNested3() throws Exception {
-		Filter f = FilterParser.parse("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))");
+		Filter f = FilterParser.parse("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))", 2);
 		assertEquals("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))", f.toString());
 	}
 }
