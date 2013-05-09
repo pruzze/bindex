@@ -196,6 +196,10 @@ import java.io.StringReader;
     }
 }
 
+<YYNESTED> <<EOF>> {
+	throw new ParseException("Unexpected end of input");
+}
+
 /* error fallback */
 . | \n { 
     throw new ParseException("Illegal character " + yytext() + " at position " + yychar ); 

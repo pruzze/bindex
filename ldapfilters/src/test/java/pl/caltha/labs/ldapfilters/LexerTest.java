@@ -496,6 +496,7 @@ public class LexerTest {
 		expectException("(aa=b)b)", "Illegal character b at position 6");
 		expectException("(aa=bb)(cc=dd)", "Illegal character ( at position 7");
 		expectException("(aa=bb))", "Illegal character ) at position 7");
+		// typed attributes
 		expectException("(a:=x)", "Illegal character = at position 3");
 		expectException("(a:String:=x)", "Illegal character : at position 9");
 		expectException("(a:Integer=x)",
@@ -507,5 +508,8 @@ public class LexerTest {
 				"Invalid attribute type Integer at position 8");
 		expectException("(a:List<List>=x)",
 				"Unsupported element type List at position 15");
+		// nested filters
+		expectException("(a=(b=c)", "Unexpected end of input");
+		expectException("(a~=(b=c))", "Illegal operator preceeding nested filter at position 4");
 	}
 }
