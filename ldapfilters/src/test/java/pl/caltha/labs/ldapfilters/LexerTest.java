@@ -220,6 +220,39 @@ public class LexerTest {
 		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
 		assertEquals(FilterParser.YYDONE, l.yylex());
 	}
+	
+	@Test 
+	public void testCompoundFilterWhitespace() throws IOException {
+		FilterParser l = startFilter(" ( & ( version >= 1.1 ) ( ! ( version <= 2 ) ) ) ");
+
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals('&', l.yycharat(l.yylength() - 1));
+
+		assertEquals(FilterParser.YYSIMPLE, l.yylex());
+		assertEquals(FilterParser.YYATTRNAME, l.yylex());
+		assertEquals(" version ", l.yytext());
+		assertEquals(FilterParser.YYOPER, l.yylex());
+		assertEquals(">=", l.yytext());
+		assertEquals(FilterParser.YYVALUE, l.yylex());
+		assertEquals(" 1.1 ", l.yytext());
+
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals('!', l.yycharat(l.yylength() - 1));
+
+		assertEquals(FilterParser.YYSIMPLE, l.yylex());
+		assertEquals(FilterParser.YYATTRNAME, l.yylex());
+		assertEquals(" version ", l.yytext());
+		assertEquals(FilterParser.YYOPER, l.yylex());
+		assertEquals("<=", l.yytext());
+		assertEquals(FilterParser.YYVALUE, l.yylex());
+		assertEquals(" 2 ", l.yytext());
+
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals(FilterParser.YYCOMPOSITE, l.yylex());
+		assertEquals(FilterParser.YYDONE, l.yylex());
+	}
 
 	@Test
 	public void testLongAttribute() throws Exception {
@@ -486,7 +519,7 @@ public class LexerTest {
 	public void testRequiremens1() throws IOException {
 		RequirementParser r = startRequirement("test.1");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		expect(FilterParser.YYDONE, r);
 	}
 
@@ -494,70 +527,70 @@ public class LexerTest {
 	public void testRequiremens2() throws IOException {
 		RequirementParser r = startRequirement("test.1,\ntest.2");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		expect(RequirementParser.YYREQUIREMENTS, r);
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.2", r.yytext().trim());
+		assertEquals("test.2", r.yytext());
 		expect(RequirementParser.YYDONE, r);
 	}
 
 	@Test
 	public void testRequirementDirectives1() throws IOException {
-		RequirementParser r = startRequirement(" test.1;a:=b");
+		RequirementParser r = startRequirement("test.1;a:=b");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("a:=", r.yytext().trim());
+		assertEquals("a:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("b", r.yytext().trim());
+		assertEquals("b", r.yytext());
 		expect(FilterParser.YYDONE, r);
 	}
 	
 	@Test
 	public void testRequirementDirectives2() throws IOException {
-		RequirementParser r = startRequirement("test.1; a := b; e := f");
+		RequirementParser r = startRequirement("test.1;a:=b;e:=f");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("a :=", r.yytext().trim());
+		assertEquals("a:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("b", r.yytext().trim());
+		assertEquals("b", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("e :=", r.yytext().trim());
+		assertEquals("e:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("f", r.yytext().trim());
+		assertEquals("f", r.yytext());
 		expect(FilterParser.YYDONE, r);
 	}
 
 	@Test
 	public void testRequirementDirectives3() throws IOException {
-		RequirementParser r = startRequirement("test.1; a:=b, test.2; e:=f ");
+		RequirementParser r = startRequirement("test.1;a:=b,test.2;e:=f");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("a:=", r.yytext().trim());
+		assertEquals("a:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("b", r.yytext().trim());
+		assertEquals("b", r.yytext());
 		
 		expect(RequirementParser.YYREQUIREMENTS, r);
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.2", r.yytext().trim());
+		assertEquals("test.2", r.yytext());
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("e:=", r.yytext().trim());
+		assertEquals("e:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("f", r.yytext().trim());
+		assertEquals("f", r.yytext());
 		expect(FilterParser.YYDONE, r);
 	}
 	
 	@Test
 	public void testRequirementFilter1() throws IOException {
-		RequirementParser r = startRequirement("test.1; filter:=\"(a=b)\"");
+		RequirementParser r = startRequirement("test.1;filter:=\"(a=b)\"");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYNESTED, r);
@@ -575,15 +608,15 @@ public class LexerTest {
 
 	@Test
 	public void testRequirementFilter2() throws IOException {
-		RequirementParser r = startRequirement("test.1; d1:=v1; filter:=\"(a=b)\"; d2:=v2");
+		RequirementParser r = startRequirement("test.1;d1:=v1;filter:=\"(a=b)\";d2:=v2");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("d1:=", r.yytext().trim());
+		assertEquals("d1:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("v1", r.yytext().trim());
+		assertEquals("v1", r.yytext());
 
 		expect(RequirementParser.YYNESTED, r);
 		expect(RequirementParser.YYSIMPLE, r);	
@@ -596,18 +629,18 @@ public class LexerTest {
 		assertEquals(FilterParser.YYNESTED, r.yylex());
 
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("d2:=", r.yytext().trim());
+		assertEquals("d2:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("v2", r.yytext().trim());
+		assertEquals("v2", r.yytext());
 		
 		expect(FilterParser.YYDONE, r);
 	}
 	
 	@Test
 	public void testRequirementFilter3() throws IOException {
-		RequirementParser r = startRequirement("test.1; filter:=\"(a=b)\", test.2; filter:=\"(c=d)\"");
+		RequirementParser r = startRequirement("test.1;filter:=\"(a=b)\",test.2;filter:=\"(c=d)\"");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYNESTED, r);
@@ -622,7 +655,7 @@ public class LexerTest {
 
 		expect(RequirementParser.YYREQUIREMENTS, r);
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.2", r.yytext().trim());
+		assertEquals("test.2", r.yytext());
 
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYNESTED, r);
@@ -640,15 +673,15 @@ public class LexerTest {
 	
 	@Test
 	public void testRequirementFilter4() throws IOException {
-		RequirementParser r = startRequirement("test.1; d1:=v1; filter:=\"(a=b)\", test.2; filter:=\"(c=d)\"; d2:=v2");
+		RequirementParser r = startRequirement("test.1;d1:=v1;filter:=\"(a=b)\",test.2;filter:=\"(c=d)\";d2:=v2");
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("d1:=", r.yytext().trim());
+		assertEquals("d1:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("v1", r.yytext().trim());
+		assertEquals("v1", r.yytext());
 		
 		expect(RequirementParser.YYNESTED, r);
 		expect(RequirementParser.YYSIMPLE, r);	
@@ -662,7 +695,7 @@ public class LexerTest {
 
 		expect(RequirementParser.YYREQUIREMENTS, r);
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.2", r.yytext().trim());
+		assertEquals("test.2", r.yytext());
 
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYNESTED, r);
@@ -676,18 +709,18 @@ public class LexerTest {
 		assertEquals(FilterParser.YYNESTED, r.yylex());
 
 		expect(RequirementParser.YYDIRECTIVE_NAME, r);
-		assertEquals("d2:=", r.yytext().trim());
+		assertEquals("d2:=", r.yytext());
 		expect(RequirementParser.YYDIRECTIVE_VALUE, r);
-		assertEquals("v2", r.yytext().trim());
+		assertEquals("v2", r.yytext());
 		
 		expect(FilterParser.YYDONE, r);
 	}
 	
 	@Test
 	public void testRequirementNestedFilter1() throws IOException {
-		RequirementParser r = startRequirement("test.1; filter:=\"(a=(a=b))\"", true);
+		RequirementParser r = startRequirement("test.1;filter:=\"(a=(a=b))\"", true);
 		expect(RequirementParser.YYREQUIREMENT, r);
-		assertEquals("test.1", r.yytext().trim());
+		assertEquals("test.1", r.yytext());
 		
 		expect(RequirementParser.YYREQUIREMENT_DIRECTIVE, r);
 		expect(RequirementParser.YYNESTED, r);

@@ -101,17 +101,17 @@ extended = [a-zA-Z0-9._-]+
 %%
 
 <YYINITIAL, YYCOMPOSITE, YYNESTED> {
-    "(&" | 
-    "(|" | 
-    "(!" {
+    {ws} "(" {ws} "&" | 
+    {ws} "(" {ws} "|" | 
+    {ws} "(" {ws} "!" {
         compStack.add(0, comp);
-        comp = booleanOperator(yycharat(1));
+        comp = booleanOperator(yycharat(yylength() - 1));
         stack.add(0, yystate());
         yybegin(YYCOMPOSITE);
         return yystate();
     }
   
-    "(" {
+    {ws} "(" {
         stack.add(0, yystate());
         attrType = AttributeType.STRING;
         attrElemType = null;
@@ -121,7 +121,7 @@ extended = [a-zA-Z0-9._-]+
 }
 
 <YYCOMPOSITE, YYNESTED, YYVALUE, YYPRES> {
-    ")" {
+    {ws} ")" {ws} {
         if(stack.size() == 0)  
             throw new ParseException("too many closing parens at position " + yychar);
         
@@ -130,7 +130,7 @@ extended = [a-zA-Z0-9._-]+
 	            Filter term = SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value);
 	            comp.addTerm(term);
 	        } catch(Exception e) {    
-	            throw new ParseException(e.getMessage() + " at position " + yychar);
+	            throw new ParseException(e.getMessage() + " at position " + yychar, e);
 	        }
         } else {
            CompoundFilter prev = compStack.remove();
@@ -159,13 +159,13 @@ extended = [a-zA-Z0-9._-]+
 }
 
 <YYATTRNAME> {
-    ":" {
+   {ws} ":" {
         yybegin(YYTYPEDATTR);
     }
 }
  
 <YYTYPEDATTR> {
-    "List<" {
+    {ws} "List" {ws} "<" {
         attrType = AttributeType.LIST;
 		yybegin(YYATTRELEMTYPE);
 		return yystate();
@@ -180,22 +180,25 @@ extended = [a-zA-Z0-9._-]+
 }
 
 <YYATTRELEMTYPE> {
-    [^=~<>():]+ ">" {
+    [^=~<>():]+ ">" {ws} {
         String typeRepr = yytext().trim();
-        attrElemType = AttributeType.parse(typeRepr.substring(0, typeRepr.length() - 1), yychar);
+        attrElemType = AttributeType.parse(typeRepr.substring(0, typeRepr.length() - 1).trim(), yychar);
         yybegin(YYATTRTYPE);
 	    return yystate();
     }
 }
 
 <YYATTRNAME, YYATTRTYPE> {
-	"=" | "~=" | ">=" | "<=" {
+	{ws} "=" | 
+	{ws} "~=" | 
+	{ws} ">=" | 
+	{ws} "<=" {
 		yybegin(YYOPER);
 		operator = Operator.parse(yytext(), yychar);
 		return yystate();
 	}		
 	
-	"=*)" {
+	{ws} "=" {ws} "*" {ws} ")" {
 	    yypushback(1);
 		yybegin(YYPRES);
 		operator = Operator.parse(yytext(), yychar);
@@ -204,7 +207,7 @@ extended = [a-zA-Z0-9._-]+
 }
 
 <YYOPER> {
-    "(" {
+    {ws} "(" {
         if(operator != Operator.EQUAL) 
         	throw new ParseException("Illegal operator preceding nested filter at position " + yychar);
         nestingDepth++;
@@ -234,11 +237,11 @@ extended = [a-zA-Z0-9._-]+
 }
 
 <YYREQUIREMENT> {
-    ";" {ws} {  		
+    {ws} ";" {ws} {  		
   		yybegin(YYREQUIREMENT_DIRECTIVE);
   		return(yystate());
     }
-    "," {ws} {
+    {ws} "," {ws} {
     	yybegin(YYREQUIREMENTS);
     	return(yystate());
     }

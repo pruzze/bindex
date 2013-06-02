@@ -82,6 +82,12 @@ public class ParserTest {
 	}
 	
 	@Test
+	public void testComplexWhitespace() {
+		Filter f = FilterParser.parse(" ( & ( a = v ) ( | ( b = x ) ( c = z ) ) ( ! ( d = q ) ) ) ");
+		assertEquals("(&(a= v )(|(b= x )(c= z ))(!(d= q )))", f.toString());
+	}
+	
+	@Test
 	public void testLongAttribute() {
 		Filter f = FilterParser.parse("(a:Long=1)");
 		assertEquals("(a:Long=1)", f.toString());
@@ -106,6 +112,12 @@ public class ParserTest {
 	}	
 	
 	@Test
+	public void testTypedWhitespace() {
+		Filter f = FilterParser.parse(" ( & ( a : Version = 1.0.0 ) ( b : List < String > = a, b, c) ) ");
+		assertEquals("(&(a:Version=1.0.0)(b:List<String>=\"a,b,c\"))", f.toString());
+	}
+	
+	@Test
 	public void testNested1() throws Exception {
 		Filter f = FilterParser.parse("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))", 1);
 		assertEquals("(osgi.wiring.package=(osgi.wiring.package=osgi.wiring.framework))", f.toString());
@@ -124,6 +136,12 @@ public class ParserTest {
 	}
 	
 	@Test
+	public void testNestedWhitespace() throws Exception {
+		Filter f = FilterParser.parse(" ( x = ( & ( a = ( a = b ) ) ( c = ( c = d ) ) ) ) ", 2);
+		assertEquals("(x=(&(a=(a= b ))(c=(c= d ))))", f.toString());
+	}
+	
+	@Test
 	public void testRequirements1() {
 		Requirements r = RequirementParser.parseRequirements("test.1", false);
 		assertEquals("test.1", r.toString());
@@ -137,37 +155,37 @@ public class ParserTest {
 	
 	@Test
 	public void testRequirementDirectives1() {
-		Requirements r = RequirementParser.parseRequirements(" test.1;a:=b", false);
+		Requirements r = RequirementParser.parseRequirements("test.1;a:=b", false);
 		assertEquals("test.1;a:=b", r.toString());
 	}
 	
 	@Test
 	public void testRequirementDirectives2() {
-		Requirements r = RequirementParser.parseRequirements("test.1; a := b; e := f", false);
+		Requirements r = RequirementParser.parseRequirements("test.1;a:=b;e:=f", false);
 		assertEquals("test.1;a:=b;e:=f", r.toString());
 	}
 	
 	@Test
 	public void testRequirementDirectives3() {
-		Requirements r = RequirementParser.parseRequirements("test.1; a:=b, test.2; e:=f ", false);
+		Requirements r = RequirementParser.parseRequirements("test.1;a:=b,test.2;e:=f", false);
 		assertEquals("test.1;a:=b,test.2;e:=f", r.toString());
 	}
 	
 	@Test
 	public void testRequirementFilter1() {
-		Requirements r = RequirementParser.parseRequirements("test.1; filter:=\"(a=b)\"", false);
+		Requirements r = RequirementParser.parseRequirements("test.1;filter:=\"(a=b)\"", false);
 		assertEquals("test.1;filter:=\"(a=b)\"", r.toString());
 	}
 	
 	@Test
 	public void testRequirementFilter2() {
-		Requirements r = RequirementParser.parseRequirements("test.1; d1:=v1; filter:=\"(a=b)\"; d2:=v2", false);
+		Requirements r = RequirementParser.parseRequirements("test.1;d1:=v1;filter:=\"(a=b)\";d2:=v2", false);
 		assertEquals("test.1;filter:=\"(a=b)\";d1:=v1;d2:=v2", r.toString());
 	}
 	
 	@Test
 	public void testRequirementFilter3() {
-		Requirements r = RequirementParser.parseRequirements("test.1; filter:=\"(a=b)\", test.2; filter:=\"(c=d)\"", false);
+		Requirements r = RequirementParser.parseRequirements("test.1;filter:=\"(a=b)\",test.2;filter:=\"(c=d)\"", false);
 		assertEquals("test.1;filter:=\"(a=b)\",test.2;filter:=\"(c=d)\"", r.toString());
 	}
 
@@ -175,5 +193,10 @@ public class ParserTest {
 	public void testRequirementNestedFilter1() {
 		Requirements r = RequirementParser.parseRequirements("test.1; filter:=\"(&(a=(a=b)))\"", true);
 		assertEquals("test.1;filter:=\"(&(a=(a=b)))\"", r.toString());
+	}
+	
+	public void testRequirementWhitespace() {
+		Requirements r = RequirementParser.parseRequirements(" test.1 ; filter: = \" ( a = b ) \" , test.2 ; filter := \" ( c = d ) \" ", false);
+		assertEquals("test.1;filter:=\"(a=b)\",test.2;filter:=\"(c=d)\"", r.toString());
 	}
 }

@@ -8,7 +8,7 @@ public class VersionFilter extends SimpleFilter<Version> {
 	}
 
 	VersionFilter(String attribute, Operator operator, String value) {
-		super(attribute, operator, new Version(value));
+		super(attribute, operator, new Version(value.trim()));
 	}
 
 	@Override
