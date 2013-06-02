@@ -17,6 +17,10 @@ public class RequirementParser extends FilterParser {
 		RequirementParser parser = new RequirementParser(
 				new StringReader(input), extendedFilters);
 		parser.parseAll();
-		return new Requirements(parser.requirements);
+		Requirements reqs = new Requirements(parser.requirements);
+		for(Requirement req : parser.requirements) {
+			req.setParent(reqs);
+		}
+		return reqs;
 	}
 }

@@ -9,15 +9,21 @@ import org.osgi.framework.Version;
 
 public class FilterFactory {
 	public static Filter and(Filter... terms) {
-		return new AndFilter(terms);
+		AndFilter filter = new AndFilter(terms);
+		setParent(filter, terms);
+		return filter;
 	}
 
 	public static Filter or(Filter... terms) {
-		return new OrFilter(terms);
+		OrFilter filter = new OrFilter(terms);
+		setParent(filter, terms);
+		return filter;
 	}
 
 	public static Filter not(Filter term) {
-		return new NotFilter(term);
+		NotFilter filter = new NotFilter(term);
+		setParent(filter, term);
+		return filter;
 	}
 
 	public static Filter filter(String attribute, Operator operator,
@@ -58,20 +64,41 @@ public class FilterFactory {
 	}
 	
 	public static Filter filter(String attribute, Filter filter) {
-		return new NestedFilter(attribute, filter);
+		NestedFilter nestedFilter = new NestedFilter(attribute, filter);
+		setParent(nestedFilter, filter);
+		return nestedFilter;
 	}
 
 	public static Requirement requirement(String namespace, Filter filter) {
-		return new Requirement(namespace, filter,
+		Requirement requirement = new Requirement(namespace, filter,
 				Collections.<String, String> emptyMap());
+		return requirement;
 	}
 
 	public static Requirement requirement(String namespace, Filter filter,
 			Map<String, String> properties) {
-		return new Requirement(namespace, filter, properties);
+		Requirement requirement = new Requirement(namespace, filter, properties);
+		setParent(requirement, filter);
+		return requirement;
 	}
 	
 	public static Requirements requirements(Requirement ...requirements) {
-		return new Requirements(Arrays.asList(requirements));
+		Requirements reqs = new Requirements(Arrays.asList(requirements));
+		setParent(reqs, requirements);
+		return reqs;
+	}
+	
+	static void setParent(Filter parent, Filter ... children) {
+		for(Filter child : children) {
+			if(child instanceof SimpleFilter) {
+				((SimpleFilter<?>)child).setParent(parent);
+			}
+			if(child instanceof CompoundFilter) {
+				((CompoundFilter)child).setParent(parent);
+			}
+			if(child instanceof Requirement) {
+				((Requirement)child).setParent(parent);
+			}
+		}
 	}
 }

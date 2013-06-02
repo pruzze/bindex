@@ -1,6 +1,8 @@
 package pl.caltha.labs.ldapfilters;
 
 public abstract class SimpleFilter<T> implements Filter {
+	
+	private Filter parent;
 
 	final private String attribute;
 
@@ -12,6 +14,14 @@ public abstract class SimpleFilter<T> implements Filter {
 		this.attribute = attribute;
 		this.operator = operator;
 		this.value = value;
+	}
+
+	public Filter getParent() {
+		return parent;
+	}
+
+	void setParent(Filter parent) {
+		this.parent = parent;
 	}
 
 	public String getAttribute() {

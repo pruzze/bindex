@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Requirement implements Filter {
+	
+	private Filter parent;
 
 	private NestedFilter filter;
 
@@ -14,6 +16,14 @@ public class Requirement implements Filter {
 	Requirement(String namespace) {
 		this.namespace = namespace;
 		this.directives = new LinkedHashMap<String, String>();
+	}
+
+	public Filter getParent() {
+		return parent;
+	}
+
+	void setParent(Filter parent) {
+		this.parent = parent;
 	}
 
 	void setFilter(NestedFilter filter) {
@@ -37,6 +47,8 @@ public class Requirement implements Filter {
 	Requirement(String namespace, Filter filter, Map<String, String> directives) {
 		this.namespace = namespace;
 		this.filter = new NestedFilter(namespace, filter);
+		FilterFactory.setParent(this.filter, filter);
+		this.filter.setParent(this);
 		this.directives = directives;
 		for (String key : directives.keySet()) {
 			if (key.equalsIgnoreCase("filter"))

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CompoundFilter implements Filter {
+	private Filter parent;
+	
 	private List<Filter> terms = new ArrayList<Filter>();
 
 	CompoundFilter() {
@@ -13,6 +15,14 @@ public abstract class CompoundFilter implements Filter {
 		for (Filter term : initTerms) {
 			terms.add(term);
 		}
+	}
+
+	public Filter getParent() {
+		return parent;
+	}
+
+	void setParent(Filter parent) {
+		this.parent = parent;
 	}
 
 	void addTerm(Filter term) {

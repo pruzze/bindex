@@ -15,6 +15,10 @@ public class Requirements implements Filter {
 		this.requirements.addAll(requirements);
 	}
 	
+	public Filter getParent() {
+		return null;
+	}
+	
 	public List<Requirement> getRequirements() {
 		return requirements;
 	}

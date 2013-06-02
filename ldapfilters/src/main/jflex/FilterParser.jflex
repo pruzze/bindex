@@ -127,14 +127,16 @@ extended = [a-zA-Z0-9._-]+
         
         if(yystate() == YYVALUE || yystate() == YYPRES) {
             try {
-	            Filter term = SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value);
+	            SimpleFilter term = SimpleFilter.newFilter(attrName, attrType, attrElemType, operator, value);
 	            comp.addTerm(term);
+	            term.setParent(comp);
 	        } catch(Exception e) {    
 	            throw new ParseException(e.getMessage() + " at position " + yychar, e);
 	        }
         } else {
            CompoundFilter prev = compStack.remove();
            prev.addTerm(comp);
+           comp.setParent(prev);
            comp = prev;
         }
         
@@ -230,7 +232,7 @@ extended = [a-zA-Z0-9._-]+
 <YYREQUIREMENTS> {
     {ws} [a-zA-Z0-9._-]+ {ws} {
   	    requirement = new Requirement(yytext().trim());
-    	requirements.add(requirement);
+    	requirements.add(requirement);    	
   	    yybegin(YYREQUIREMENT);
   	    return yystate();
     }
@@ -255,6 +257,7 @@ extended = [a-zA-Z0-9._-]+
     "filter" {ws} ":=" {ws} "\"" {
     	compStack.add(0, comp);
         comp = new NestedFilter(requirement.getNamespace());
+        comp.setParent(requirement);
         stack.add(0, YYDIRECTIVE_CLOSE_FILTER);
         yybegin(YYNESTED);
         return yystate();
