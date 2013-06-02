@@ -122,4 +122,58 @@ public class ParserTest {
 		Filter f = FilterParser.parse("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))", 2);
 		assertEquals("(osgi.resource.capability=(&(osgi.wiring.package=(&(osgi.wiring.package=javax.mail)(version:Version>=1.4.0)(version:Version<=2.0.0)))(osgi.identity=(license=http://www.opensource.org/licenses/EPL-1.0))))", f.toString());
 	}
+	
+	@Test
+	public void testRequirements1() {
+		Requirements r = RequirementParser.parseRequirements("test.1", false);
+		assertEquals("test.1", r.toString());
+	}
+	
+	@Test
+	public void testRequirements2() {
+		Requirements r = RequirementParser.parseRequirements("test.1,\ntest.2", false);
+		assertEquals("test.1,test.2", r.toString());
+	}
+	
+	@Test
+	public void testRequirementDirectives1() {
+		Requirements r = RequirementParser.parseRequirements(" test.1;a:=b", false);
+		assertEquals("test.1;a:=b", r.toString());
+	}
+	
+	@Test
+	public void testRequirementDirectives2() {
+		Requirements r = RequirementParser.parseRequirements("test.1; a := b; e := f", false);
+		assertEquals("test.1;a:=b;e:=f", r.toString());
+	}
+	
+	@Test
+	public void testRequirementDirectives3() {
+		Requirements r = RequirementParser.parseRequirements("test.1; a:=b, test.2; e:=f ", false);
+		assertEquals("test.1;a:=b,test.2;e:=f", r.toString());
+	}
+	
+	@Test
+	public void testRequirementFilter1() {
+		Requirements r = RequirementParser.parseRequirements("test.1; filter:=\"(a=b)\"", false);
+		assertEquals("test.1;filter:=\"(a=b)\"", r.toString());
+	}
+	
+	@Test
+	public void testRequirementFilter2() {
+		Requirements r = RequirementParser.parseRequirements("test.1; d1:=v1; filter:=\"(a=b)\"; d2:=v2", false);
+		assertEquals("test.1;filter:=\"(a=b)\";d1:=v1;d2:=v2", r.toString());
+	}
+	
+	@Test
+	public void testRequirementFilter3() {
+		Requirements r = RequirementParser.parseRequirements("test.1; filter:=\"(a=b)\", test.2; filter:=\"(c=d)\"", false);
+		assertEquals("test.1;filter:=\"(a=b)\",test.2;filter:=\"(c=d)\"", r.toString());
+	}
+
+	@Test
+	public void testRequirementNestedFilter1() {
+		Requirements r = RequirementParser.parseRequirements("test.1; filter:=\"(&(a=(a=b)))\"", true);
+		assertEquals("test.1;filter:=\"(&(a=(a=b)))\"", r.toString());
+	}
 }

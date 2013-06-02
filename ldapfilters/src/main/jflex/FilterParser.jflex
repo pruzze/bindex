@@ -14,6 +14,7 @@ import java.io.StringReader;
 %char
 %states YYSIMPLE, YYCOMPOSITE, YYNESTED, YYDONE
 %states YYATTRNAME, YYTYPEDATTR, YYATTRTYPE, YYATTRELEMTYPE, YYOPER, YYPRES, YYVALUE
+%states YYREQUIREMENTS, YYREQUIREMENT, YYREQUIREMENT_DIRECTIVE, YYDIRECTIVE_NAME, YYDIRECTIVE_VALUE, YYDIRECTIVE_CLOSE_FILTER
 %ctorarg int allowedNestingDepth
 %init{
 	this.allowedNestingDepth = allowedNestingDepth;
@@ -38,6 +39,14 @@ import java.io.StringReader;
 	private final int allowedNestingDepth;
 	
 	private int nestingDepth = 0;
+	
+	private String directiveName;
+	
+	private String directiveValue;
+	
+	private Requirement requirement;
+	
+	protected LinkedList<Requirement> requirements;
 	
 	private static class Sentinel extends CompoundFilter {
 	    public <V> V accept(FilterVisitor<V> visitor, V data) {
@@ -64,23 +73,31 @@ import java.io.StringReader;
 	    return comp.getTerms().get(0);
 	}
 	
+	protected void parseAll() throws ParseException {
+	    try {
+	        int state;
+	        do {
+	           state = yylex();
+	        } while(state != YYEOF);
+	    } catch(IOException e) {
+	    	throw new RuntimeException("Unexpected IOException from StringReader", e);
+	    }
+	}
+	
 	public static Filter parse(String input) throws ParseException {
 		return parse(input, 0);
 	}
 	
 	public static Filter parse(String input, int allowedNestingDepth) throws ParseException {
 	    FilterParser parser = new FilterParser(new StringReader(input), allowedNestingDepth);
-	    try {
-	        int state;
-	        do {
-	           state = parser.yylex();
-	        } while(state != YYEOF);
-	    } catch(IOException e) {
-	    	throw new RuntimeException("Unexpected IOException from StringReader", e);
-	    }
+	    parser.parseAll();
 	    return parser.result();
 	}
 %}
+
+ws = [ \n\t\f\r\n]*
+extended = [a-zA-Z0-9._-]+
+
 %%
 
 <YYINITIAL, YYCOMPOSITE, YYNESTED> {
@@ -189,7 +206,7 @@ import java.io.StringReader;
 <YYOPER> {
     "(" {
         if(operator != Operator.EQUAL) 
-        	throw new ParseException("Illegal operator preceeding nested filter at position " + yychar);
+        	throw new ParseException("Illegal operator preceding nested filter at position " + yychar);
         nestingDepth++;
         if(nestingDepth > allowedNestingDepth)
         	throw new ParseException("Allowed nesting depth of " + allowedNestingDepth + " exceeded at position " + yychar); 		
@@ -207,14 +224,95 @@ import java.io.StringReader;
     }
 }
 
+<YYREQUIREMENTS> {
+    {ws} [a-zA-Z0-9._-]+ {ws} {
+  	    requirement = new Requirement(yytext().trim());
+    	requirements.add(requirement);
+  	    yybegin(YYREQUIREMENT);
+  	    return yystate();
+    }
+}
+
+<YYREQUIREMENT> {
+    ";" {ws} {  		
+  		yybegin(YYREQUIREMENT_DIRECTIVE);
+  		return(yystate());
+    }
+    "," {ws} {
+    	yybegin(YYREQUIREMENTS);
+    	return(yystate());
+    }
+    <<EOF>> {
+    	yybegin(YYDONE);
+    	return yystate();
+    }
+}
+
+<YYREQUIREMENT_DIRECTIVE> {
+    "filter" {ws} ":=" {ws} "\"" {
+    	compStack.add(0, comp);
+        comp = new NestedFilter(requirement.getNamespace());
+        stack.add(0, YYDIRECTIVE_CLOSE_FILTER);
+        yybegin(YYNESTED);
+        return yystate();
+    }
+
+    {extended} {ws} ":=" {
+        directiveName = yytext().substring(0, yytext().length() - 2).trim();
+        yybegin(YYDIRECTIVE_NAME);
+        return yystate();
+    }
+}
+
+<YYNESTED> {
+	"\"" {
+		if(stack.size() > 0 && stack.get(0) == YYDIRECTIVE_CLOSE_FILTER) {
+		    yypushback(1);
+		    yybegin(stack.remove());
+		}
+	}
+}
+
+<YYDIRECTIVE_CLOSE_FILTER> {
+    "\"" {
+        requirement.setFilter((NestedFilter)comp);
+        yybegin(YYDIRECTIVE_VALUE);
+    }
+}
+
+<YYDIRECTIVE_NAME> {
+    [^,;]+  {
+    	requirement.addDirective(directiveName, yytext().trim());
+    	yybegin(YYDIRECTIVE_VALUE);
+    	return yystate();
+    }
+}
+
+<YYDIRECTIVE_VALUE> {
+	";" {ws} {
+	    yybegin(YYREQUIREMENT_DIRECTIVE);
+	}
+	"," {ws} {
+		yypushback(yylength());
+		yybegin(YYREQUIREMENT);
+	}
+	<<EOF>> {
+		yybegin(YYDONE);
+    	return yystate();
+	}
+}
+
+
 <YYDONE> {
     . | \n {
         throw new ParseException("Illegal character " + yytext() + " at position " + yychar );
     }
 }
 
-<YYNESTED> <<EOF>> {
-	throw new ParseException("Unexpected end of input");
+<<EOF>> {
+    if(yystate() != YYDONE)
+		throw new ParseException("Unexpected end of input");
+    return YYEOF;		
 }
 
 /* error fallback */
